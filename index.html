@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerAI - Complete Career Platform</title>
+    <meta name="description" content="AI-powered career platform with study materials, live internships, job portal, resume builder, and personalized guidance for all career fields.">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body data-color-scheme="dark">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useContext, createContext, useRef } = React;
+
+        // App Context
+        const AppContext = createContext();
+
+        // Study Materials Data
+        const studyMaterialsData = {
+            ca: {
+                books: [
+                    {title: "Munish Bhandari Accounts", level: "Foundation", price: "₹450", rating: 4.8, publisher: "Bharat Law House", pages: 650},
+                    {title: "Tulsian Business Law", level: "Foundation", price: "₹380", rating: 4.6, publisher: "Tulsian Publications", pages: 520},
+                    {title: "Dinesh Madan Economics", level: "Foundation", price: "₹420", rating: 4.5, publisher: "Taxmann", pages: 480},
+                    {title: "RD Sharma Business Mathematics", level: "Foundation", price: "₹390", rating: 4.7, publisher: "Dhanpat Rai", pages: 580}
+                ],
+                online: [
+                    {platform: "Unacademy CA", price: "₹999/month", rating: 4.5, link: "https://unacademy.com/goal/ca-foundation/", features: ["Live Classes", "Doubt Solving", "Test Series"]},
+                    {platform: "Physics Wallah CA", price: "Free", rating: 4.9, link: "https://www.pw.live/", features: ["Free Lectures", "Study Material", "Mock Tests"]},
+                    {platform: "BYJU'S CA", price: "₹1499/month", rating: 4.3, link: "https://byjus.com/ca/", features: ["Recorded Lectures", "Personalized Learning", "Progress Tracking"]},
+                    {platform: "CA Gyaan", price: "₹799/month", rating: 4.4, link: "https://cagyaan.com/", features: ["Subject-wise Tests", "Performance Analysis", "Study Plans"]}
+                ],
+                youtube: [
+                    {channel: "CA Rajat Arora", subscribers: "500K+", link: "https://www.youtube.com/@CArajatarora", speciality: "Complete CA Course", videos: "1000+"},
+                    {channel: "Sunil Sharma Sir", subscribers: "300K+", link: "https://www.youtube.com/@sunilsharmaCA", speciality: "Business Mathematics", videos: "400+"},
+                    {channel: "CA Praveen Sharma", subscribers: "250K+", link: "https://www.youtube.com/@CApraveensharma", speciality: "Economics & Law", videos: "600+"},
+                    {channel: "Accounting Fundas", subscribers: "180K+", link: "https://www.youtube.com/@AccountingFundas", speciality: "Practical Accounting", videos: "350+"}
+                ],
+                mockTests: [
+                    {platform: "Testbook CA", price: "₹599", tests: 50, link: "https://testbook.com/ca-foundation"},
+                    {platform: "Oliveboard CA", price: "₹799", tests: 75, link: "https://www.oliveboard.in/ca/"},
+                    {platform: "ICAI Mock Tests", price: "Free", tests: 20, link: "https://www.icai.org/"}
+                ]
+            },
+            engineering: {
+                books: [
+                    {title: "HC Verma Physics", level: "JEE", price: "₹695", rating: 4.9, publisher: "Bharti Bhawan", pages: 1200},
+                    {title: "RD Sharma Mathematics", level: "JEE", price: "₹850", rating: 4.7, publisher: "Dhanpat Rai", pages: 1500},
+                    {title: "MS Chauhan Organic Chemistry", level: "JEE", price: "₹650", rating: 4.8, publisher: "Balaji Publications", pages: 800},
+                    {title: "DC Pandey Physics", level: "JEE", price: "₹720", rating: 4.6, publisher: "Arihant", pages: 950}
+                ],
+                online: [
+                    {platform: "Physics Wallah JEE", price: "Free", rating: 4.9, link: "https://www.pw.live/", features: ["Complete JEE Course", "Live Classes", "Doubt Solving"]},
+                    {platform: "Unacademy JEE", price: "₹1499/month", rating: 4.5, link: "https://unacademy.com/goal/jee-main/", features: ["Top Educators", "Test Series", "Study Material"]},
+                    {platform: "Vedantu JEE", price: "₹1299/month", rating: 4.4, link: "https://www.vedantu.com/jee", features: ["Interactive Classes", "Doubt Chat", "Performance Analysis"]},
+                    {platform: "Embibe", price: "Free", rating: 4.2, link: "https://www.embibe.com/", features: ["AI-Powered Learning", "Mock Tests", "Personalized Practice"]}
+                ],
+                youtube: [
+                    {channel: "Physics Wallah", subscribers: "8.2M+", link: "https://www.youtube.com/@PhysicsWallah", speciality: "Complete JEE/NEET", videos: "5000+"},
+                    {channel: "Tute Dude", subscribers: "1.5M+", link: "https://www.youtube.com/@TuteDude", speciality: "JEE Advanced Physics", videos: "800+"},
+                    {channel: "Mohit Tyagi", subscribers: "1.8M+", link: "https://www.youtube.com/@MohitTyagi", speciality: "JEE Physics", videos: "1200+"},
+                    {channel: "The Net Ninja", subscribers: "1.2M+", link: "https://www.youtube.com/@NetNinja", speciality: "Programming", videos: "2000+"}
+                ]
+            },
+            upsc: {
+                books: [
+                    {title: "Indian Polity by Laxmikant", level: "Mains", price: "₹595", rating: 4.9, publisher: "McGraw Hill", pages: 650},
+                    {title: "Modern History by Spectrum", level: "Mains", price: "₹485", rating: 4.7, publisher: "Spectrum", pages: 420},
+                    {title: "Geography by Goh Cheng Leong", level: "Mains", price: "₹545", rating: 4.8, publisher: "Oxford", pages: 380},
+                    {title: "Economy by Ramesh Singh", level: "Mains", price: "₹625", rating: 4.6, publisher: "McGraw Hill", pages: 750}
+                ],
+                online: [
+                    {platform: "Unacademy UPSC", price: "₹1999/month", rating: 4.6, link: "https://unacademy.com/goal/upsc-civil-services-examination-ias-preparation/", features: ["Top Educators", "Current Affairs", "Test Series"]},
+                    {platform: "BYJU'S IAS", price: "₹2499/month", rating: 4.4, link: "https://byjus.com/ias/", features: ["Comprehensive Course", "Mentorship", "Answer Writing"]},
+                    {platform: "InsightIAS", price: "₹999/month", rating: 4.5, link: "https://www.insightsonindia.com/", features: ["Daily Current Affairs", "Test Series", "Study Material"]},
+                    {platform: "Vision IAS", price: "₹1499/month", rating: 4.7, link: "https://www.visionias.in/", features: ["Classroom Notes", "Test Series", "Current Affairs"]}
+                ],
+                youtube: [
+                    {channel: "Study IQ Education", subscribers: "4.2M+", link: "https://www.youtube.com/@StudyIQeducation", speciality: "Complete UPSC", videos: "8000+"},
+                    {channel: "Drishti IAS", subscribers: "2.8M+", link: "https://www.youtube.com/@DrishtiIASEnglish", speciality: "Current Affairs", videos: "3000+"},
+                    {channel: "Unacademy UPSC", subscribers: "1.5M+", link: "https://www.youtube.com/@UnacademyUPSC", speciality: "UPSC Preparation", videos: "2500+"},
+                    {channel: "Vision IAS", subscribers: "800K+", link: "https://www.youtube.com/@VisionIASofficialchannel", speciality: "Mains & Interview", videos: "1500+"}
+                ]
+            },
+            medical: {
+                books: [
+                    {title: "NCERT Biology 11th & 12th", level: "NEET", price: "₹450", rating: 4.9, publisher: "NCERT", pages: 800},
+                    {title: "Trueman's Biology", level: "NEET", price: "₹650", rating: 4.7, publisher: "Trueman Publications", pages: 1200},
+                    {title: "OP Tandon Chemistry", level: "NEET", price: "₹580", rating: 4.6, publisher: "GR Bathla", pages: 950},
+                    {title: "HC Verma Physics", level: "NEET", price: "₹695", rating: 4.8, publisher: "Bharti Bhawan", pages: 1200}
+                ],
+                online: [
+                    {platform: "Physics Wallah NEET", price: "Free", rating: 4.9, link: "https://www.pw.live/", features: ["Complete NEET Course", "Biology Focus", "Mock Tests"]},
+                    {platform: "Vedantu NEET", price: "₹1199/month", rating: 4.5, link: "https://www.vedantu.com/neet", features: ["Subject Experts", "Doubt Solving", "Test Series"]},
+                    {platform: "Unacademy NEET", price: "₹1399/month", rating: 4.4, link: "https://unacademy.com/goal/neet-ug/", features: ["Top Faculty", "Live Classes", "Performance Analysis"]},
+                    {platform: "Aakash Digital", price: "₹1999/month", rating: 4.3, link: "https://www.aakash.ac.in/", features: ["Recorded Lectures", "Study Material", "Doubt Resolution"]}
+                ],
+                youtube: [
+                    {channel: "Physics Wallah NEET", subscribers: "3.5M+", link: "https://www.youtube.com/@PhysicsWallah", speciality: "Complete NEET", videos: "4000+"},
+                    {channel: "Vedantu NEET", subscribers: "2.1M+", link: "https://www.youtube.com/@VedantuNEET", speciality: "NEET Biology", videos: "2000+"},
+                    {channel: "Dr. Bhatia Medical", subscribers: "800K+", link: "https://www.youtube.com/@DrBhatiaEducation", speciality: "NEET Biology", videos: "1000+"},
+                    {channel: "Unacademy NEET", subscribers: "1.2M+", link: "https://www.youtube.com/@UnacademyNEETUG", speciality: "NEET Preparation", videos: "1800+"}
+                ]
+            },
+            software: {
+                books: [
+                    {title: "Clean Code by Robert Martin", level: "Professional", price: "₹899", rating: 4.9, publisher: "Prentice Hall", pages: 464},
+                    {title: "Design Patterns", level: "Advanced", price: "₹1200", rating: 4.8, publisher: "Addison Wesley", pages: 395},
+                    {title: "System Design Interview", level: "Senior", price: "₹750", rating: 4.7, publisher: "Independently Published", pages: 280},
+                    {title: "JavaScript: The Good Parts", level: "Intermediate", price: "₹650", rating: 4.6, publisher: "O'Reilly", pages: 176}
+                ],
+                online: [
+                    {platform: "Coursera", price: "₹3999/month", rating: 4.6, link: "https://www.coursera.org/", features: ["University Courses", "Certificates", "Specializations"]},
+                    {platform: "Udemy", price: "₹1499/course", rating: 4.4, link: "https://www.udemy.com/", features: ["Practical Projects", "Lifetime Access", "Certificate"]},
+                    {platform: "Pluralsight", price: "₹2499/month", rating: 4.5, link: "https://www.pluralsight.com/", features: ["Skill Assessments", "Learning Paths", "Hands-on Labs"]},
+                    {platform: "freeCodeCamp", price: "Free", rating: 4.8, link: "https://www.freecodecamp.org/", features: ["Full Stack Curriculum", "Projects", "Certificates"]}
+                ],
+                youtube: [
+                    {channel: "CodeWithHarry", subscribers: "3.8M+", link: "https://www.youtube.com/@CodeWithHarry", speciality: "Programming in Hindi", videos: "2000+"},
+                    {channel: "Apna College", subscribers: "4.2M+", link: "https://www.youtube.com/@ApnaCollegeOfficial", speciality: "Complete Programming", videos: "500+"},
+                    {channel: "Love Babbar", subscribers: "1.5M+", link: "https://www.youtube.com/@LoveBabbar1", speciality: "DSA & Placements", videos: "800+"},
+                    {channel: "Traversy Media", subscribers: "2.1M+", link: "https://www.youtube.com/@TraversyMedia", speciality: "Web Development", videos: "1500+"}
+                ],
+                practice: [
+                    {platform: "LeetCode", price: "Free/Premium", link: "https://leetcode.com/", problems: "2500+", difficulty: "Easy to Hard"},
+                    {platform: "HackerRank", price: "Free", link: "https://www.hackerrank.com/", problems: "2000+", focus: "Interview Prep"},
+                    {platform: "CodeChef", price: "Free", link: "https://www.codechef.com/", problems: "3000+", focus: "Competitive Programming"},
+                    {platform: "GeeksforGeeks", price: "Free/Premium", link: "https://www.geeksforgeeks.org/", articles: "50000+", focus: "CS Fundamentals"}
+                ]
+            }
+        };
+
+        // Live Internships Data
+        const liveInternshipsData = {
+            software: [
+                {
+                    id: 101,
+                    title: "Software Development Intern",
+                    company: "Google",
+                    location: "Bangalore",
+                    duration: "10-12 weeks",
+                    stipend: "₹80,000/month",
+                    skills: ["Python", "Java", "System Design"],
+                    description: "Work on large-scale distributed systems",
+                    applicationLink: "https://careers.google.com/students/",
+                    deadline: "2024-11-30",
+                    type: "Full-time",
+                    eligibility: "Final year students",
+                    benefits: ["Mentorship", "Free Meals", "Health Insurance", "Learning Budget"]
+                },
+                {
+                    id: 102,
+                    title: "Frontend Development Intern",
+                    company: "Microsoft",
+                    location: "Hyderabad",
+                    duration: "12 weeks",
+                    stipend: "₹75,000/month",
+                    skills: ["React", "TypeScript", "Azure"],
+                    description: "Build user interfaces for Microsoft products",
+                    applicationLink: "https://careers.microsoft.com/students/",
+                    deadline: "2024-12-15",
+                    type: "Full-time",
+                    eligibility: "Pre-final & Final year",
+                    benefits: ["Surface Laptop", "Office 365", "Certification", "Full-time Offer"]
+                },
+                {
+                    id: 103,
+                    title: "Data Science Intern",
+                    company: "Amazon",
+                    location: "Bangalore",
+                    duration: "8-10 weeks",
+                    stipend: "₹70,000/month",
+                    skills: ["Python", "Machine Learning", "AWS"],
+                    description: "Work on recommendation algorithms",
+                    applicationLink: "https://www.amazon.jobs/en/teams/internships-for-students",
+                    deadline: "2024-10-31",
+                    type: "Full-time",
+                    eligibility: "Final year students",
+                    benefits: ["AWS Credits", "Mentorship", "Return Offer", "Relocation Support"]
+                },
+                {
+                    id: 104,
+                    title: "Mobile App Development Intern",
+                    company: "Flipkart",
+                    location: "Bangalore",
+                    duration: "6 months",
+                    stipend: "₹45,000/month",
+                    skills: ["React Native", "Android", "iOS"],
+                    description: "Develop features for Flipkart mobile app",
+                    applicationLink: "https://www.flipkartcareers.com/#!/",
+                    deadline: "2024-11-15",
+                    type: "Full-time",
+                    eligibility: "Pre-final year students",
+                    benefits: ["Learning Stipend", "Flexible Hours", "Free Lunch", "PPO Opportunity"]
+                },
+                {
+                    id: 105,
+                    title: "Backend Engineering Intern",
+                    company: "Zomato",
+                    location: "Gurgaon",
+                    duration: "4-6 months",
+                    stipend: "₹40,000/month",
+                    skills: ["Java", "Spring Boot", "Microservices"],
+                    description: "Build scalable backend services",
+                    applicationLink: "https://www.zomato.com/careers",
+                    deadline: "2024-12-01",
+                    type: "Full-time",
+                    eligibility: "All engineering students",
+                    benefits: ["Free Food Delivery", "Health Insurance", "Flexible WFH", "Conversion Opportunity"]
+                }
+            ],
+            ca: [
+                {
+                    id: 201,
+                    title: "Audit Intern",
+                    company: "Deloitte",
+                    location: "Mumbai",
+                    duration: "6 months",
+                    stipend: "₹25,000/month",
+                    skills: ["Audit", "Financial Analysis", "Excel"],
+                    description: "Assist in statutory audits of large corporations",
+                    applicationLink: "https://www2.deloitte.com/in/en/pages/careers/careers.html",
+                    deadline: "2024-10-30",
+                    type: "Full-time",
+                    eligibility: "CA Intermediate students",
+                    benefits: ["Professional Training", "Certification", "Networking", "Full-time Offer"]
+                },
+                {
+                    id: 202,
+                    title: "Tax Advisory Intern",
+                    company: "PwC",
+                    location: "Delhi",
+                    duration: "4-6 months",
+                    stipend: "₹22,000/month",
+                    skills: ["Taxation", "GST", "Income Tax"],
+                    description: "Support tax advisory services for clients",
+                    applicationLink: "https://www.pwc.in/careers.html",
+                    deadline: "2024-11-20",
+                    type: "Full-time",
+                    eligibility: "CA Final students",
+                    benefits: ["CA Training", "Client Exposure", "Mentorship", "PPO"]
+                }
+            ],
+            medical: [
+                {
+                    id: 301,
+                    title: "Clinical Research Intern",
+                    company: "Dr. Reddy's Labs",
+                    location: "Hyderabad",
+                    duration: "3-6 months",
+                    stipend: "₹30,000/month",
+                    skills: ["Clinical Research", "Data Analysis", "Medical Writing"],
+                    description: "Support clinical trials and research studies",
+                    applicationLink: "https://www.drreddys.com/careers/",
+                    deadline: "2024-11-10",
+                    type: "Full-time",
+                    eligibility: "MBBS students",
+                    benefits: ["Research Experience", "Publication Opportunity", "Mentorship", "Certificate"]
+                },
+                {
+                    id: 302,
+                    title: "Medical Technology Intern",
+                    company: "Practo",
+                    location: "Bangalore",
+                    duration: "4-6 months",
+                    stipend: "₹35,000/month",
+                    skills: ["Healthcare Technology", "Product Development"],
+                    description: "Work on healthcare technology solutions",
+                    applicationLink: "https://www.practo.com/careers",
+                    deadline: "2024-12-05",
+                    type: "Full-time",
+                    eligibility: "Medical & Engineering students",
+                    benefits: ["Healthcare Exposure", "Tech Skills", "Stock Options", "Full-time Role"]
+                }
+            ],
+            government: [
+                {
+                    id: 401,
+                    title: "Parliamentary Intern",
+                    company: "Lok Sabha Secretariat",
+                    location: "New Delhi",
+                    duration: "2-3 months",
+                    stipend: "₹15,000/month",
+                    skills: ["Policy Research", "Parliamentary Procedures"],
+                    description: "Assist in parliamentary research and documentation",
+                    applicationLink: "https://loksabha.nic.in/",
+                    deadline: "2024-10-25",
+                    type: "Full-time",
+                    eligibility: "Graduate students",
+                    benefits: ["Government Experience", "Policy Exposure", "Certificate", "Networking"]
+                },
+                {
+                    id: 402,
+                    title: "Administrative Intern",
+                    company: "District Collector Office",
+                    location: "Various",
+                    duration: "3-6 months",
+                    stipend: "₹12,000/month",
+                    skills: ["Administration", "Public Service", "Documentation"],
+                    description: "Support district administration activities",
+                    applicationLink: "https://www.india.gov.in/",
+                    deadline: "2024-11-30",
+                    type: "Full-time",
+                    eligibility: "Graduate students",
+                    benefits: ["Administrative Experience", "Field Exposure", "Certificate", "UPSC Preparation"]
+                }
+            ]
+        };
+
+        // Pie Chart Data
+        const pieChartData = {
+            jobMarketShare: {
+                labels: ["Software Engineering", "CA/Finance", "Medical", "Government", "Others"],
+                data: [35, 20, 15, 20, 10],
+                colors: ["#00d4ff", "#00ff88", "#8b5cf6", "#ff6b35", "#ffdd00"]
+            },
+            salaryDistribution: {
+                labels: ["0-5 LPA", "5-15 LPA", "15-30 LPA", "30+ LPA"],
+                data: [30, 40, 25, 5],
+                colors: ["#ff4757", "#ffdd00", "#00ff88", "#00d4ff"]
+            },
+            skillsDemand: {
+                labels: ["Programming", "Finance", "Healthcare", "Management", "Design"],
+                data: [40, 25, 15, 15, 5],
+                colors: ["#00d4ff", "#00ff88", "#8b5cf6", "#ff6b35", "#ff0080"]
+            },
+            studyProgress: {
+                labels: ["Completed", "In Progress", "Not Started"],
+                data: [45, 35, 20],
+                colors: ["#00ff88", "#ffdd00", "#ff4757"]
+            },
+            internshipTypes: {
+                labels: ["Tech", "Finance", "Healthcare", "Government", "Others"],
+                data: [50, 20, 15, 10, 5],
+                colors: ["#00d4ff", "#00ff88", "#8b5cf6", "#ff6b35", "#ffdd00"]
+            }
+        };
+
+        // Main App Component
+        function App() {
+            const [currentStep, setCurrentStep] = useState('welcome');
+            const [selectedField, setSelectedField] = useState(null);
+            const [selectedCareer, setSelectedCareer] = useState(null);
+            const [selectedStudyField, setSelectedStudyField] = useState('ca');
+            const [selectedInternshipField, setSelectedInternshipField] = useState('software');
+            const [userProfile, setUserProfile] = useState({
+                name: '',
+                experience: '',
+                interests: [],
+                goals: ''
+            });
+            const [assessmentResults, setAssessmentResults] = useState(null);
+            const [chatHistory, setChatHistory] = useState([]);
+            const [resumeData, setResumeData] = useState({
+                personalInfo: {},
+                education: [],
+                experience: [],
+                skills: [],
+                projects: []
+            });
+            const [resumeStep, setResumeStep] = useState(0);
+            const [jobSearchQuery, setJobSearchQuery] = useState('');
+            const [atsScore, setAtsScore] = useState(null);
+
+            const contextValue = {
+                currentStep, setCurrentStep,
+                selectedField, setSelectedField,
+                selectedCareer, setSelectedCareer,
+                selectedStudyField, setSelectedStudyField,
+                selectedInternshipField, setSelectedInternshipField,
+                userProfile, setUserProfile,
+                assessmentResults, setAssessmentResults,
+                chatHistory, setChatHistory,
+                resumeData, setResumeData,
+                resumeStep, setResumeStep,
+                jobSearchQuery, setJobSearchQuery,
+                atsScore, setAtsScore
+            };
+
+            return React.createElement(
+                AppContext.Provider,
+                { value: contextValue },
+                React.createElement('div', { className: 'app' },
+                    React.createElement(Header, null),
+                    React.createElement(MainContent, null),
+                    React.createElement(Footer, null)
+                )
+            );
+        }
+
+        // Header Component
+        function Header() {
+            const { currentStep, setCurrentStep } = useContext(AppContext);
+
+            const handleNavigation = (step) => {
+                console.log('Navigating to:', step);
+                setCurrentStep(step);
+            };
+
+            return React.createElement('header', { className: 'app-header' },
+                React.createElement('div', { className: 'container' },
+                    React.createElement('div', { className: 'header-content' },
+                        React.createElement('div', { 
+                            className: 'logo',
+                            onClick: () => handleNavigation('welcome'),
+                            style: { cursor: 'pointer' }
+                        },
+                            React.createElement('div', { className: 'logo-icon' }, '🎯'),
+                            React.createElement('div', { className: 'logo-text' },
+                                React.createElement('span', { className: 'logo-name' }, 'CareerAI'),
+                                React.createElement('span', { className: 'logo-subtitle' }, 'Complete Career Platform')
+                            )
+                        ),
+                        React.createElement('nav', { className: 'header-nav' },
+                            React.createElement('button', {
+                                className: `nav-btn ${currentStep === 'study-materials' ? 'active' : ''}`,
+                                onClick: () => handleNavigation('study-materials')
+                            }, '📚 Study Materials'),
+                            React.createElement('button', {
+                                className: `nav-btn ${currentStep === 'internships' ? 'active' : ''}`,
+                                onClick: () => handleNavigation('internships')
+                            }, '💼 Live Internships'),
+                            React.createElement('button', {
+                                className: `nav-btn ${currentStep === 'resume-builder' ? 'active' : ''}`,
+                                onClick: () => handleNavigation('resume-builder')
+                            }, '📄 Resume Builder'),
+                            React.createElement('button', {
+                                className: `nav-btn ${currentStep === 'job-portal' ? 'active' : ''}`,
+                                onClick: () => handleNavigation('job-portal')
+                            }, '🎯 Job Portal'),
+                            React.createElement('button', {
+                                className: `nav-btn ${currentStep === 'ats-checker' ? 'active' : ''}`,
+                                onClick: () => handleNavigation('ats-checker')
+                            }, '⚡ ATS Score'),
+                            React.createElement('button', {
+                                className: `nav-btn ${currentStep === 'fields' ? 'active' : ''}`,
+                                onClick: () => handleNavigation('fields')
+                            }, '🌟 Career Fields'),
+                            React.createElement('button', {
+                                className: `nav-btn ${currentStep === 'assessment' ? 'active' : ''}`,
+                                onClick: () => handleNavigation('assessment')
+                            }, '📊 Assessment'),
+                            React.createElement('button', {
+                                className: `nav-btn ${currentStep === 'coach' ? 'active' : ''}`,
+                                onClick: () => handleNavigation('coach')
+                            }, '🤖 AI Coach'),
+                            React.createElement('button', {
+                                className: `nav-btn ${currentStep === 'analytics' ? 'active' : ''}`,
+                                onClick: () => handleNavigation('analytics')
+                            }, '📈 Analytics')
+                        )
+                    )
+                )
+            );
+        }
+
+        // Main Content Router
+        function MainContent() {
+            const { currentStep } = useContext(AppContext);
+
+            const renderStep = () => {
+                switch (currentStep) {
+                    case 'welcome': return React.createElement(WelcomeScreen, null);
+                    case 'study-materials': return React.createElement(StudyMaterials, null);
+                    case 'internships': return React.createElement(LiveInternships, null);
+                    case 'resume-builder': return React.createElement(ResumeBuilder, null);
+                    case 'job-portal': return React.createElement(JobPortal, null);
+                    case 'ats-checker': return React.createElement(ATSChecker, null);
+                    case 'fields': return React.createElement(FieldExplorer, null);
+                    case 'career-detail': return React.createElement(CareerDetail, null);
+                    case 'assessment': return React.createElement(SkillAssessment, null);
+                    case 'results': return React.createElement(AssessmentResults, null);
+                    case 'roadmap': return React.createElement(LearningRoadmap, null);
+                    case 'coach': return React.createElement(AICoach, null);
+                    case 'analytics': return React.createElement(Analytics, null);
+                    default: return React.createElement(WelcomeScreen, null);
+                }
+            };
+
+            return React.createElement('main', { className: 'main-content' }, renderStep());
+        }
+
+        // Welcome Screen (Enhanced)
+        function WelcomeScreen() {
+            const { setCurrentStep, userProfile, setUserProfile } = useContext(AppContext);
+
+            const handleStart = (e) => {
+                e.preventDefault();
+                console.log('Starting journey with profile:', userProfile);
+                if (userProfile.name.trim()) {
+                    setCurrentStep('study-materials');
+                } else {
+                    setCurrentStep('study-materials'); // Navigate anyway for demo
+                }
+            };
+
+            const handleQuickNavigation = (section) => {
+                console.log('Quick navigation to:', section);
+                setCurrentStep(section);
+            };
+
+            return React.createElement('div', { className: 'welcome-screen' },
+                React.createElement('div', { className: 'container' },
+                    React.createElement('div', { className: 'welcome-content' },
+                        React.createElement('div', { className: 'welcome-hero' },
+                            React.createElement('h1', null, 'CareerAI - Complete Career Platform'),
+                            React.createElement('p', null, 'Your one-stop destination for career success! Get study materials, live internships, AI-powered resume builder, job portal, ATS checker, and personalized career guidance.'),
+                            React.createElement('div', { className: 'feature-highlights' },
+                                React.createElement('div', { 
+                                    className: 'feature-item',
+                                    onClick: () => handleQuickNavigation('study-materials'),
+                                    style: { cursor: 'pointer' }
+                                },
+                                    React.createElement('span', { className: 'feature-icon' }, '📚'),
+                                    React.createElement('span', null, 'Study Materials')
+                                ),
+                                React.createElement('div', { 
+                                    className: 'feature-item',
+                                    onClick: () => handleQuickNavigation('internships'),
+                                    style: { cursor: 'pointer' }
+                                },
+                                    React.createElement('span', { className: 'feature-icon' }, '💼'),
+                                    React.createElement('span', null, 'Live Internships')
+                                ),
+                                React.createElement('div', { 
+                                    className: 'feature-item',
+                                    onClick: () => handleQuickNavigation('resume-builder'),
+                                    style: { cursor: 'pointer' }
+                                },
+                                    React.createElement('span', { className: 'feature-icon' }, '📄'),
+                                    React.createElement('span', null, 'Resume Builder')
+                                ),
+                                React.createElement('div', { 
+                                    className: 'feature-item',
+                                    onClick: () => handleQuickNavigation('job-portal'),
+                                    style: { cursor: 'pointer' }
+                                },
+                                    React.createElement('span', { className: 'feature-icon' }, '🎯'),
+                                    React.createElement('span', null, 'Job Portal')
+                                ),
+                                React.createElement('div', { 
+                                    className: 'feature-item',
+                                    onClick: () => handleQuickNavigation('coach'),
+                                    style: { cursor: 'pointer' }
+                                },
+                                    React.createElement('span', { className: 'feature-icon' }, '🤖'),
+                                    React.createElement('span', null, 'AI Guidance')
+                                )
+                            )
+                        ),
+                        React.createElement('div', { className: 'welcome-form' },
+                            React.createElement('h2', null, "Let's Begin Your Journey"),
+                            React.createElement('form', { onSubmit: handleStart },
+                                React.createElement('div', { className: 'form-group' },
+                                    React.createElement('label', { className: 'form-label' }, "What's your name?"),
+                                    React.createElement('input', {
+                                        type: 'text',
+                                        className: 'form-control',
+                                        value: userProfile.name,
+                                        onChange: (e) => setUserProfile({...userProfile, name: e.target.value}),
+                                        placeholder: 'Enter your name'
+                                    })
+                                ),
+                                React.createElement('div', { className: 'form-group' },
+                                    React.createElement('label', { className: 'form-label' }, 'Current Experience Level'),
+                                    React.createElement('select', {
+                                        className: 'form-control',
+                                        value: userProfile.experience,
+                                        onChange: (e) => setUserProfile({...userProfile, experience: e.target.value})
+                                    },
+                                        React.createElement('option', { value: '' }, 'Select your level'),
+                                        React.createElement('option', { value: 'student' }, 'Student'),
+                                        React.createElement('option', { value: 'beginner' }, 'Beginner (New to workforce)'),
+                                        React.createElement('option', { value: 'entry' }, 'Entry Level (0-2 years)'),
+                                        React.createElement('option', { value: 'mid' }, 'Mid Level (3-5 years)'),
+                                        React.createElement('option', { value: 'senior' }, 'Senior Level (6-10 years)'),
+                                        React.createElement('option', { value: 'expert' }, 'Expert (10+ years)')
+                                    )
+                                ),
+                                React.createElement('div', { className: 'form-group' },
+                                    React.createElement('label', { className: 'form-label' }, 'Career Goals'),
+                                    React.createElement('textarea', {
+                                        className: 'form-control',
+                                        value: userProfile.goals,
+                                        onChange: (e) => setUserProfile({...userProfile, goals: e.target.value}),
+                                        placeholder: 'What are you looking to achieve in your career?',
+                                        rows: 3
+                                    })
+                                ),
+                                React.createElement('button', {
+                                    type: 'submit',
+                                    className: 'btn btn--primary btn--lg btn--full-width glow-btn'
+                                }, 'Start My Career Journey 🚀')
+                            )
+                        )
+                    )
+                )
+            );
+        }
+
+        // Study Materials Component
+        function StudyMaterials() {
+            const { selectedStudyField, setSelectedStudyField } = useContext(AppContext);
+
+            const fieldDisplayNames = {
+                ca: 'CA (Chartered Accountant)',
+                engineering: 'Engineering (JEE/NEET)',
+                upsc: 'UPSC/Civil Services',
+                medical: 'Medical (MBBS/NEET)',
+                software: 'Software Engineering'
+            };
+
+            const handleFieldChange = (field) => {
+                setSelectedStudyField(field);
+            };
+
+            const renderMaterialCard = (material, type) => {
+                return React.createElement('div', { className: 'material-card', key: material.title || material.platform || material.channel },
+                    React.createElement('div', { className: 'material-header' },
+                        React.createElement('h4', null, material.title || material.platform || material.channel),
+                        material.rating && React.createElement('div', { className: 'rating' },
+                            React.createElement('span', { className: 'rating-stars' }, '⭐'.repeat(Math.floor(material.rating))),
+                            React.createElement('span', { className: 'rating-value' }, material.rating)
+                        )
+                    ),
+                    React.createElement('div', { className: 'material-content' },
+                        material.price && React.createElement('div', { className: 'material-price' }, material.price),
+                        material.level && React.createElement('div', { className: 'material-level' }, material.level),
+                        material.speciality && React.createElement('div', { className: 'material-speciality' }, material.speciality),
+                        material.subscribers && React.createElement('div', { className: 'material-subscribers' }, material.subscribers),
+                        material.videos && React.createElement('div', { className: 'material-videos' }, material.videos + ' videos'),
+                        material.features && React.createElement('div', { className: 'material-features' },
+                            material.features.map(feature => 
+                                React.createElement('span', { className: 'feature-tag', key: feature }, feature)
+                            )
+                        )
+                    ),
+                    material.link && React.createElement('div', { className: 'material-actions' },
+                        React.createElement('a', {
+                            href: material.link,
+                            target: '_blank',
+                            rel: 'noopener noreferrer',
+                            className: 'btn btn--primary btn--sm'
+                        }, 'Access Now →')
+                    )
+                );
+            };
+
+            const currentFieldData = studyMaterialsData[selectedStudyField] || {};
+
+            return React.createElement('div', { className: 'study-materials' },
+                React.createElement('div', { className: 'container' },
+                    React.createElement('div', { className: 'page-header' },
+                        React.createElement('h1', null, '📚 Study Materials'),
+                        React.createElement('p', null, 'Comprehensive learning resources for all career fields with real-time live content')
+                    ),
+                    React.createElement('div', { className: 'field-selector' },
+                        Object.entries(fieldDisplayNames).map(([key, name]) =>
+                            React.createElement('button', {
+                                key: key,
+                                className: `field-btn ${selectedStudyField === key ? 'active' : ''}`,
+                                onClick: () => handleFieldChange(key)
+                            }, name)
+                        )
+                    ),
+                    React.createElement('div', { className: 'materials-content' },
+                        currentFieldData.books && React.createElement('section', { className: 'material-section' },
+                            React.createElement('h2', null, '📖 Books & Study Material'),
+                            React.createElement('div', { className: 'materials-grid' },
+                                currentFieldData.books.map(book => renderMaterialCard(book, 'book'))
+                            )
+                        ),
+                        currentFieldData.online && React.createElement('section', { className: 'material-section' },
+                            React.createElement('h2', null, '💻 Online Platforms'),
+                            React.createElement('div', { className: 'materials-grid' },
+                                currentFieldData.online.map(platform => renderMaterialCard(platform, 'online'))
+                            )
+                        ),
+                        currentFieldData.youtube && React.createElement('section', { className: 'material-section' },
+                            React.createElement('h2', null, '📺 YouTube Channels'),
+                            React.createElement('div', { className: 'materials-grid' },
+                                currentFieldData.youtube.map(channel => renderMaterialCard(channel, 'youtube'))
+                            )
+                        ),
+                        currentFieldData.mockTests && React.createElement('section', { className: 'material-section' },
+                            React.createElement('h2', null, '📝 Mock Tests'),
+                            React.createElement('div', { className: 'materials-grid' },
+                                currentFieldData.mockTests.map(test => renderMaterialCard(test, 'test'))
+                            )
+                        ),
+                        currentFieldData.practice && React.createElement('section', { className: 'material-section' },
+                            React.createElement('h2', null, '💪 Practice Platforms'),
+                            React.createElement('div', { className: 'materials-grid' },
+                                currentFieldData.practice.map(platform => renderMaterialCard(platform, 'practice'))
+                            )
+                        )
+                    )
+                )
+            );
+        }
+
+        // Live Internships Component
+        function LiveInternships() {
+            const { selectedInternshipField, setSelectedInternshipField } = useContext(AppContext);
+
+            const fieldDisplayNames = {
+                software: 'Software Engineering',
+                ca: 'CA/Finance',
+                medical: 'Medical/Healthcare',
+                government: 'Government/UPSC'
+            };
+
+            const handleFieldChange = (field) => {
+                setSelectedInternshipField(field);
+            };
+
+            const renderInternshipCard = (internship) => {
+                const today = new Date();
+                const deadline = new Date(internship.deadline);
+                const daysLeft = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
+                const isUrgent = daysLeft <= 7;
+
+                return React.createElement('div', { 
+                    className: `internship-card ${isUrgent ? 'urgent' : ''}`,
+                    key: internship.id
+                },
+                    React.createElement('div', { className: 'internship-header' },
+                        React.createElement('div', { className: 'internship-company' }, internship.company),
+                        React.createElement('div', { className: 'internship-location' }, '📍 ' + internship.location),
+                        isUrgent && React.createElement('div', { className: 'urgent-badge' }, '🔥 Urgent')
+                    ),
+                    React.createElement('h3', { className: 'internship-title' }, internship.title),
+                    React.createElement('div', { className: 'internship-details' },
+                        React.createElement('div', { className: 'detail-item' },
+                            React.createElement('span', { className: 'detail-label' }, 'Stipend:'),
+                            React.createElement('span', { className: 'detail-value stipend' }, internship.stipend)
+                        ),
+                        React.createElement('div', { className: 'detail-item' },
+                            React.createElement('span', { className: 'detail-label' }, 'Duration:'),
+                            React.createElement('span', { className: 'detail-value' }, internship.duration)
+                        ),
+                        React.createElement('div', { className: 'detail-item' },
+                            React.createElement('span', { className: 'detail-label' }, 'Deadline:'),
+                            React.createElement('span', { className: `detail-value ${isUrgent ? 'urgent-text' : ''}` }, 
+                                daysLeft > 0 ? `${daysLeft} days left` : 'Expired'
+                            )
+                        ),
+                        React.createElement('div', { className: 'detail-item' },
+                            React.createElement('span', { className: 'detail-label' }, 'Eligibility:'),
+                            React.createElement('span', { className: 'detail-value' }, internship.eligibility)
+                        )
+                    ),
+                    React.createElement('div', { className: 'internship-skills' },
+                        internship.skills.map(skill =>
+                            React.createElement('span', { className: 'skill-tag', key: skill }, skill)
+                        )
+                    ),
+                    React.createElement('p', { className: 'internship-description' }, internship.description),
+                    React.createElement('div', { className: 'internship-benefits' },
+                        React.createElement('h4', null, 'Benefits:'),
+                        React.createElement('div', { className: 'benefits-list' },
+                            internship.benefits.map(benefit =>
+                                React.createElement('span', { className: 'benefit-tag', key: benefit }, benefit)
+                            )
+                        )
+                    ),
+                    React.createElement('div', { className: 'internship-actions' },
+                        React.createElement('a', {
+                            href: internship.applicationLink,
+                            target: '_blank',
+                            rel: 'noopener noreferrer',
+                            className: 'btn btn--primary btn--lg apply-btn'
+                        }, '🚀 Apply Now')
+                    )
+                );
+            };
+
+            const currentInternships = liveInternshipsData[selectedInternshipField] || [];
+
+            return React.createElement('div', { className: 'live-internships' },
+                React.createElement('div', { className: 'container' },
+                    React.createElement('div', { className: 'page-header' },
+                        React.createElement('h1', null, '💼 Live Internship Opportunities'),
+                        React.createElement('p', null, 'Real internship opportunities with direct application links')
+                    ),
+                    React.createElement('div', { className: 'field-selector' },
+                        Object.entries(fieldDisplayNames).map(([key, name]) =>
+                            React.createElement('button', {
+                                key: key,
+                                className: `field-btn ${selectedInternshipField === key ? 'active' : ''}`,
+                                onClick: () => handleFieldChange(key)
+                            }, name)
+                        )
+                    ),
+                    React.createElement('div', { className: 'internships-grid' },
+                        currentInternships.map(internship => renderInternshipCard(internship))
+                    ),
+                    currentInternships.length === 0 && React.createElement('div', { className: 'no-internships' },
+                        React.createElement('h3', null, 'No internships available'),
+                        React.createElement('p', null, 'Check back later for new opportunities!')
+                    )
+                )
+            );
+        }
+
+        // Analytics Component (New with Pie Charts)
+        function Analytics() {
+            const chartRefs = {
+                jobMarket: useRef(null),
+                salary: useRef(null),
+                skills: useRef(null),
+                progress: useRef(null),
+                internships: useRef(null)
+            };
+
+            useEffect(() => {
+                // Create pie charts
+                const createCharts = () => {
+                    Object.entries(chartRefs).forEach(([key, ref]) => {
+                        if (ref.current) {
+                            const ctx = ref.current.getContext('2d');
+                            const chartData = pieChartData[key === 'jobMarket' ? 'jobMarketShare' : 
+                                                         key === 'salary' ? 'salaryDistribution' :
+                                                         key === 'skills' ? 'skillsDemand' :
+                                                         key === 'progress' ? 'studyProgress' : 'internshipTypes'];
+                            
+                            new Chart(ctx, {
+                                type: 'pie',
+                                data: {
+                                    labels: chartData.labels,
+                                    datasets: [{
+                                        data: chartData.data,
+                                        backgroundColor: chartData.colors,
+                                        borderWidth: 2,
+                                        borderColor: '#1a1a1a'
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: {
+                                        legend: {
+                                            position: 'bottom',
+                                            labels: {
+                                                color: '#ffffff',
+                                                padding: 20,
+                                                font: {
+                                                    size: 12
+                                                }
+                                            }
+                                        },
+                                        tooltip: {
+                                            backgroundColor: '#2d2d30',
+                                            titleColor: '#ffffff',
+                                            bodyColor: '#ffffff',
+                                            borderColor: '#00d4ff',
+                                            borderWidth: 1
+                                        }
+                                    },
+                                    elements: {
+                                        arc: {
+                                            borderWidth: 0
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                };
+
+                // Delay chart creation to ensure DOM is ready
+                const timer = setTimeout(createCharts, 100);
+                return () => clearTimeout(timer);
+            }, []);
+
+            return React.createElement('div', { className: 'analytics' },
+                React.createElement('div', { className: 'container' },
+                    React.createElement('div', { className: 'page-header' },
+                        React.createElement('h1', null, '📈 Career Analytics Dashboard'),
+                        React.createElement('p', null, 'Visual insights into job market trends and career opportunities')
+                    ),
+                    React.createElement('div', { className: 'analytics-grid' },
+                        React.createElement('div', { className: 'chart-card' },
+                            React.createElement('h3', null, 'Job Market Share'),
+                            React.createElement('div', { className: 'chart-container', style: {position: 'relative', height: '300px'} },
+                                React.createElement('canvas', { ref: chartRefs.jobMarket })
+                            )
+                        ),
+                        React.createElement('div', { className: 'chart-card' },
+                            React.createElement('h3', null, 'Salary Distribution'),
+                            React.createElement('div', { className: 'chart-container', style: {position: 'relative', height: '300px'} },
+                                React.createElement('canvas', { ref: chartRefs.salary })
+                            )
+                        ),
+                        React.createElement('div', { className: 'chart-card' },
+                            React.createElement('h3', null, 'Skills in Demand'),
+                            React.createElement('div', { className: 'chart-container', style: {position: 'relative', height: '300px'} },
+                                React.createElement('canvas', { ref: chartRefs.skills })
+                            )
+                        ),
+                        React.createElement('div', { className: 'chart-card' },
+                            React.createElement('h3', null, 'Study Progress'),
+                            React.createElement('div', { className: 'chart-container', style: {position: 'relative', height: '300px'} },
+                                React.createElement('canvas', { ref: chartRefs.progress })
+                            )
+                        ),
+                        React.createElement('div', { className: 'chart-card' },
+                            React.createElement('h3', null, 'Internship Opportunities'),
+                            React.createElement('div', { className: 'chart-container', style: {position: 'relative', height: '300px'} },
+                                React.createElement('canvas', { ref: chartRefs.internships })
+                            )
+                        )
+                    )
+                )
+            );
+        }
+
+        // Resume Builder Component
+        function ResumeBuilder() {
+            const { resumeData, setResumeData, resumeStep, setResumeStep } = useContext(AppContext);
+
+            const steps = ['Personal Info', 'Education', 'Experience', 'Skills', 'Review'];
+
+            const handleNext = () => {
+                if (resumeStep < steps.length - 1) {
+                    setResumeStep(resumeStep + 1);
+                }
+            };
+
+            const handlePrev = () => {
+                if (resumeStep > 0) {
+                    setResumeStep(resumeStep - 1);
+                }
+            };
+
+            const renderPersonalInfo = () => {
+                return React.createElement('div', { className: 'resume-step' },
+                    React.createElement('h3', null, 'Personal Information'),
+                    React.createElement('div', { className: 'form-group' },
+                        React.createElement('label', { className: 'form-label' }, 'Full Name'),
+                        React.createElement('input', {
+                            type: 'text',
+                            className: 'form-control',
+                            value: resumeData.personalInfo.name || '',
+                            onChange: (e) => setResumeData({
+                                ...resumeData,
+                                personalInfo: { ...resumeData.personalInfo, name: e.target.value }
+                            })
+                        })
+                    ),
+                    React.createElement('div', { className: 'form-group' },
+                        React.createElement('label', { className: 'form-label' }, 'Email'),
+                        React.createElement('input', {
+                            type: 'email',
+                            className: 'form-control',
+                            value: resumeData.personalInfo.email || '',
+                            onChange: (e) => setResumeData({
+                                ...resumeData,
+                                personalInfo: { ...resumeData.personalInfo, email: e.target.value }
+                            })
+                        })
+                    ),
+                    React.createElement('div', { className: 'form-group' },
+                        React.createElement('label', { className: 'form-label' }, 'Phone'),
+                        React.createElement('input', {
+                            type: 'tel',
+                            className: 'form-control',
+                            value: resumeData.personalInfo.phone || '',
+                            onChange: (e) => setResumeData({
+                                ...resumeData,
+                                personalInfo: { ...resumeData.personalInfo, phone: e.target.value }
+                            })
+                        })
+                    )
+                );
+            };
+
+            const renderStepContent = () => {
+                switch (resumeStep) {
+                    case 0: return renderPersonalInfo();
+                    case 1: return React.createElement('div', { className: 'resume-step' }, 
+                        React.createElement('h3', null, 'Education Section'),
+                        React.createElement('p', null, 'Add your educational background here.')
+                    );
+                    case 2: return React.createElement('div', { className: 'resume-step' }, 
+                        React.createElement('h3', null, 'Experience Section'),
+                        React.createElement('p', null, 'Add your work experience here.')
+                    );
+                    case 3: return React.createElement('div', { className: 'resume-step' }, 
+                        React.createElement('h3', null, 'Skills Section'),
+                        React.createElement('p', null, 'Add your skills and competencies here.')
+                    );
+                    case 4: return React.createElement('div', { className: 'resume-step' }, 
+                        React.createElement('h3', null, 'Resume Preview'),
+                        React.createElement('p', null, 'Review your completed resume before downloading.')
+                    );
+                    default: return renderPersonalInfo();
+                }
+            };
+
+            return React.createElement('div', { className: 'resume-builder' },
+                React.createElement('div', { className: 'container' },
+                    React.createElement('div', { className: 'page-header' },
+                        React.createElement('h1', null, '📄 AI Resume Builder'),
+                        React.createElement('p', null, 'Create professional resumes with AI assistance')
+                    ),
+                    React.createElement('div', { className: 'resume-stepper' },
+                        steps.map((step, index) =>
+                            React.createElement('div', {
+                                key: index,
+                                className: `step ${index === resumeStep ? 'active' : ''} ${index < resumeStep ? 'completed' : ''}`
+                            }, step)
+                        )
+                    ),
+                    React.createElement('div', { className: 'resume-content' },
+                        renderStepContent(),
+                        React.createElement('div', { className: 'resume-actions' },
+                            resumeStep > 0 && React.createElement('button', {
+                                className: 'btn btn--outline',
+                                onClick: handlePrev
+                            }, 'Previous'),
+                            resumeStep < steps.length - 1 && React.createElement('button', {
+                                className: 'btn btn--primary',
+                                onClick: handleNext
+                            }, 'Next'),
+                            resumeStep === steps.length - 1 && React.createElement('button', {
+                                className: 'btn btn--primary glow-btn'
+                            }, 'Download Resume')
+                        )
+                    )
+                )
+            );
+        }
+
+        // Job Portal Component
+        function JobPortal() {
+            const { jobSearchQuery, setJobSearchQuery } = useContext(AppContext);
+
+            const jobListings = [
+                {
+                    id: 1,
+                    title: "Software Engineer",
+                    company: "Google",
+                    location: "Bangalore",
+                    salary: "₹15-25 LPA",
+                    posted: "2 days ago",
+                    link: "https://careers.google.com/"
+                },
+                {
+                    id: 2,
+                    title: "Data Scientist", 
+                    company: "Microsoft",
+                    location: "Hyderabad",
+                    salary: "₹18-30 LPA",
+                    posted: "1 day ago",
+                    link: "https://careers.microsoft.com/"
+                },
+                {
+                    id: 3,
+                    title: "Product Manager",
+                    company: "Amazon",
+                    location: "Bangalore",
+                    salary: "₹20-35 LPA",
+                    posted: "3 days ago",
+                    link: "https://amazon.jobs/"
+                }
+            ];
+
+            return React.createElement('div', { className: 'job-portal' },
+                React.createElement('div', { className: 'container' },
+                    React.createElement('div', { className: 'page-header' },
+                        React.createElement('h1', null, '🎯 Job Portal'),
+                        React.createElement('p', null, 'Find and apply to your dream jobs')
+                    ),
+                    React.createElement('div', { className: 'job-search' },
+                        React.createElement('input', {
+                            type: 'text',
+                            className: 'form-control job-search-input',
+                            placeholder: 'Search jobs, companies, skills...',
+                            value: jobSearchQuery,
+                            onChange: (e) => setJobSearchQuery(e.target.value)
+                        }),
+                        React.createElement('button', { className: 'btn btn--primary' }, 'Search Jobs')
+                    ),
+                    React.createElement('div', { className: 'job-listings' },
+                        jobListings.map(job =>
+                            React.createElement('div', { className: 'job-card', key: job.id },
+                                React.createElement('div', { className: 'job-header' },
+                                    React.createElement('h3', null, job.title),
+                                    React.createElement('span', { className: 'job-posted' }, job.posted)
+                                ),
+                                React.createElement('div', { className: 'job-company' }, job.company),
+                                React.createElement('div', { className: 'job-details' },
+                                    React.createElement('span', { className: 'job-location' }, '📍 ' + job.location),
+                                    React.createElement('span', { className: 'job-salary' }, '💰 ' + job.salary)
+                                ),
+                                React.createElement('div', { className: 'job-actions' },
+                                    React.createElement('a', {
+                                        href: job.link,
+                                        target: '_blank',
+                                        rel: 'noopener noreferrer',
+                                        className: 'btn btn--primary'
+                                    }, 'Apply Now')
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+        }
+
+        // ATS Checker Component
+        function ATSChecker() {
+            const { atsScore, setAtsScore } = useContext(AppContext);
+            const [resumeText, setResumeText] = useState('');
+
+            const checkATS = () => {
+                // Simulate ATS checking
+                const score = Math.floor(Math.random() * 40) + 60;
+                setAtsScore(score);
+            };
+
+            return React.createElement('div', { className: 'ats-checker' },
+                React.createElement('div', { className: 'container' },
+                    React.createElement('div', { className: 'page-header' },
+                        React.createElement('h1', null, '⚡ ATS Score Checker'),
+                        React.createElement('p', null, 'Check how your resume performs against ATS systems')
+                    ),
+                    React.createElement('div', { className: 'ats-content' },
+                        React.createElement('div', { className: 'ats-input' },
+                            React.createElement('textarea', {
+                                className: 'form-control',
+                                placeholder: 'Paste your resume content here...',
+                                rows: 10,
+                                value: resumeText,
+                                onChange: (e) => setResumeText(e.target.value)
+                            }),
+                            React.createElement('button', {
+                                className: 'btn btn--primary btn--lg',
+                                onClick: checkATS,
+                                disabled: !resumeText.trim()
+                            }, 'Check ATS Score')
+                        ),
+                        atsScore && React.createElement('div', { className: 'ats-result' },
+                            React.createElement('h3', null, 'Your ATS Score'),
+                            React.createElement('div', { className: 'score-display' },
+                                React.createElement('div', { 
+                                    className: `score-circle ${atsScore >= 80 ? 'good' : atsScore >= 60 ? 'average' : 'poor'}`
+                                }, atsScore + '%'),
+                                React.createElement('div', { className: 'score-feedback' },
+                                    atsScore >= 80 ? 'Excellent! Your resume is ATS-friendly.' :
+                                    atsScore >= 60 ? 'Good! Some improvements needed.' :
+                                    'Needs work. Consider optimizing for ATS.'
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+        }
+
+        // Field Explorer Component
+        function FieldExplorer() {
+            const { setCurrentStep, setSelectedField, setSelectedCareer } = useContext(AppContext);
+
+            const fieldCategories = {
+                'Technology': 'technology',
+                'Healthcare': 'healthcare', 
+                'Business': 'business'
+            };
+
+            const careerFieldsData = {
+                technology: {
+                    softwareDevelopment: {
+                        skills: ["Programming Languages", "Problem Solving", "Version Control"],
+                        salaryRange: "$65,000 - $180,000",
+                        jobGrowth: "22% (much faster than average)"
+                    }
+                },
+                healthcare: {
+                    nursing: {
+                        skills: ["Patient Care", "Medical Knowledge", "Communication"],
+                        salaryRange: "$60,000 - $120,000",
+                        jobGrowth: "7% (faster than average)"
+                    }
+                },
+                business: {
+                    marketing: {
+                        skills: ["Market Research", "Content Creation", "Analytics"],
+                        salaryRange: "$45,000 - $150,000",
+                        jobGrowth: "10% (faster than average)"
+                    }
+                }
+            };
+
+            const getFieldIcon = (fieldKey) => {
+                const icons = {
+                    technology: '💻',
+                    healthcare: '🏥',
+                    business: '💼'
+                };
+                return icons[fieldKey] || '💼';
+            };
+
+            const getFieldDescription = (fieldKey) => {
+                const descriptions = {
+                    technology: 'Software, data, cybersecurity, and emerging tech careers',
+                    healthcare: 'Medical, nursing, therapy, and health administration',
+                    business: 'Marketing, finance, operations, and management'
+                };
+                return descriptions[fieldKey] || 'Professional career opportunities';
+            };
+
+            const handleFieldSelect = (fieldName, fieldKey) => {
+                setSelectedField({ name: fieldName, key: fieldKey });
+                const careers = Object.keys(careerFieldsData[fieldKey] || {});
+                if (careers.length >= 1) {
+                    setSelectedCareer({
+                        name: careers[0],
+                        data: careerFieldsData[fieldKey][careers[0]]
+                    });
+                    setCurrentStep('career-detail');
+                }
+            };
+
+            return React.createElement('div', { className: 'field-explorer' },
+                React.createElement('div', { className: 'container' },
+                    React.createElement('div', { className: 'page-header' },
+                        React.createElement('h1', null, '🌟 Explore Career Fields'),
+                        React.createElement('p', null, 'Choose a field to discover career opportunities, required skills, and growth paths')
+                    ),
+                    React.createElement('div', { className: 'fields-grid' },
+                        Object.entries(fieldCategories).map(([fieldName, fieldKey]) =>
+                            React.createElement('div', {
+                                key: fieldKey,
+                                className: 'field-card glow-card',
+                                onClick: () => handleFieldSelect(fieldName, fieldKey)
+                            },
+                                React.createElement('div', { className: 'field-icon' }, getFieldIcon(fieldKey)),
+                                React.createElement('h3', null, fieldName),
+                                React.createElement('p', null, getFieldDescription(fieldKey)),
+                                React.createElement('div', { className: 'field-careers' },
+                                    Object.keys(careerFieldsData[fieldKey] || {}).length + ' careers available'
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+        }
+
+        // Career Detail Component
+        function CareerDetail() {
+            const { selectedField, selectedCareer, setCurrentStep } = useContext(AppContext);
+
+            if (!selectedCareer) return null;
+
+            const career = selectedCareer.data;
+            const formatCareerName = (name) => {
+                return name.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim();
+            };
+
+            return React.createElement('div', { className: 'career-detail' },
+                React.createElement('div', { className: 'container' },
+                    React.createElement('button', {
+                        className: 'back-btn',
+                        onClick: () => setCurrentStep('fields')
+                    }, '← Back to Fields'),
+                    React.createElement('div', { className: 'career-header' },
+                        React.createElement('h1', null, formatCareerName(selectedCareer.name)),
+                        React.createElement('div', { className: 'career-stats' },
+                            React.createElement('div', { className: 'stat' },
+                                React.createElement('span', { className: 'stat-label' }, 'Salary Range'),
+                                React.createElement('span', { className: 'stat-value' }, career.salaryRange)
+                            ),
+                            React.createElement('div', { className: 'stat' },
+                                React.createElement('span', { className: 'stat-label' }, 'Job Growth'),
+                                React.createElement('span', { className: 'stat-value' }, career.jobGrowth)
+                            )
+                        )
+                    ),
+                    React.createElement('div', { className: 'career-content' },
+                        React.createElement('div', { className: 'career-section' },
+                            React.createElement('h2', null, 'Required Skills'),
+                            React.createElement('div', { className: 'skills-grid' },
+                                career.skills?.map((skill, index) =>
+                                    React.createElement('span', { key: index, className: 'skill-tag' }, skill)
+                                )
+                            )
+                        ),
+                        React.createElement('div', { className: 'career-actions' },
+                            React.createElement('button', {
+                                className: 'btn btn--primary btn--lg glow-btn',
+                                onClick: () => setCurrentStep('assessment')
+                            }, 'Take Skill Assessment'),
+                            React.createElement('button', {
+                                className: 'btn btn--outline btn--lg',
+                                onClick: () => setCurrentStep('coach')
+                            }, 'Get AI Guidance')
+                        )
+                    )
+                )
+            );
+        }
+
+        // Skill Assessment Component
+        function SkillAssessment() {
+            const { setCurrentStep, setAssessmentResults } = useContext(AppContext);
+            const [currentQuestion, setCurrentQuestion] = useState(0);
+            const [answers, setAnswers] = useState({});
+
+            const questions = [
+                {
+                    id: 1,
+                    question: "How would you rate your current technical skills?",
+                    options: [
+                        { text: "Beginner", value: 1 },
+                        { text: "Some experience", value: 2 },
+                        { text: "Intermediate", value: 3 },
+                        { text: "Advanced", value: 4 },
+                        { text: "Expert", value: 5 }
+                    ]
+                }
+            ];
+
+            const handleAnswer = (questionId, answer) => {
+                setAnswers({...answers, [questionId]: answer});
+            };
+
+            const handleNext = () => {
+                const results = {
+                    overallScore: 85,
+                    strengths: [
+                        { name: "Technical Skills", score: 75 },
+                        { name: "Problem Solving", score: 85 }
+                    ],
+                    recommendations: [
+                        {
+                            icon: "📚",
+                            title: "Enhance Technical Skills",
+                            description: "Focus on building stronger technical foundation"
+                        }
+                    ]
+                };
+                setAssessmentResults(results);
+                setCurrentStep('results');
+            };
+
+            const question = questions[currentQuestion];
+
+            return React.createElement('div', { className: 'skill-assessment' },
+                React.createElement('div', { className: 'container' },
+                    React.createElement('div', { className: 'assessment-header' },
+                        React.createElement('h1', null, '📊 Skill Assessment'),
+                        React.createElement('div', { className: 'progress-bar' },
+                            React.createElement('div', {
+                                className: 'progress-fill',
+                                style: { width: '100%' }
+                            })
+                        )
+                    ),
+                    React.createElement('div', { className: 'question-card' },
+                        React.createElement('h2', null, question.question),
+                        React.createElement('div', { className: 'answer-options' },
+                            question.options.map((option, index) =>
+                                React.createElement('label', { key: index, className: 'option-label' },
+                                    React.createElement('input', {
+                                        type: 'radio',
+                                        name: `question-${question.id}`,
+                                        value: option.value,
+                                        onChange: (e) => handleAnswer(question.id, parseInt(e.target.value))
+                                    }),
+                                    React.createElement('span', { className: 'option-text' }, option.text)
+                                )
+                            )
+                        ),
+                        React.createElement('button', {
+                            className: 'btn btn--primary btn--lg glow-btn',
+                            onClick: handleNext
+                        }, 'Complete Assessment')
+                    )
+                )
+            );
+        }
+
+        // Assessment Results Component
+        function AssessmentResults() {
+            const { assessmentResults, setCurrentStep } = useContext(AppContext);
+
+            if (!assessmentResults) return null;
+
+            return React.createElement('div', { className: 'assessment-results' },
+                React.createElement('div', { className: 'container' },
+                    React.createElement('div', { className: 'results-header' },
+                        React.createElement('h1', null, '🎯 Your Assessment Results'),
+                        React.createElement('div', { className: 'overall-score' },
+                            React.createElement('span', { className: 'score-number' }, assessmentResults.overallScore + '%'),
+                            React.createElement('span', { className: 'score-label' }, 'Overall Readiness')
+                        )
+                    ),
+                    React.createElement('div', { className: 'results-actions' },
+                        React.createElement('button', {
+                            className: 'btn btn--primary btn--lg glow-btn',
+                            onClick: () => setCurrentStep('roadmap')
+                        }, 'Get Learning Roadmap'),
+                        React.createElement('button', {
+                            className: 'btn btn--outline btn--lg',
+                            onClick: () => setCurrentStep('coach')
+                        }, 'Talk to AI Coach')
+                    )
+                )
+            );
+        }
+
+        // Learning Roadmap Component
+        function LearningRoadmap() {
+            const { setCurrentStep } = useContext(AppContext);
+
+            return React.createElement('div', { className: 'learning-roadmap' },
+                React.createElement('div', { className: 'container' },
+                    React.createElement('div', { className: 'roadmap-header' },
+                        React.createElement('h1', null, '🗺️ Your Personalized Learning Roadmap'),
+                        React.createElement('p', null, 'A customized path to achieve your career goals')
+                    ),
+                    React.createElement('div', { className: 'roadmap-actions' },
+                        React.createElement('button', {
+                            className: 'btn btn--primary btn--lg glow-btn',
+                            onClick: () => setCurrentStep('coach')
+                        }, 'Get AI Coach Support')
+                    )
+                )
+            );
+        }
+
+        // AI Coach Component
+        function AICoach() {
+            const { chatHistory, setChatHistory } = useContext(AppContext);
+            const [currentMessage, setCurrentMessage] = useState('');
+            const [isTyping, setIsTyping] = useState(false);
+
+            const handleSendMessage = (e) => {
+                e.preventDefault();
+                if (!currentMessage.trim()) return;
+
+                const userMessage = {
+                    id: Date.now(),
+                    sender: 'user',
+                    message: currentMessage,
+                    timestamp: new Date()
+                };
+
+                setChatHistory([...chatHistory, userMessage]);
+                setCurrentMessage('');
+                setIsTyping(true);
+
+                setTimeout(() => {
+                    const aiResponse = "Thanks for your question! I'm here to help you with your career journey. Based on our platform's resources, I recommend exploring our study materials and internship opportunities.";
+                    const aiMessage = {
+                        id: Date.now() + 1,
+                        sender: 'ai',
+                        message: aiResponse,
+                        timestamp: new Date()
+                    };
+                    setChatHistory(prev => [...prev, aiMessage]);
+                    setIsTyping(false);
+                }, 2000);
+            };
+
+            useEffect(() => {
+                if (chatHistory.length === 0) {
+                    const welcomeMessage = {
+                        id: 1,
+                        sender: 'ai',
+                        message: "Hello! I'm your AI Career Coach. I can help you with study materials, internship opportunities, resume building, and career guidance. How can I assist you today?",
+                        timestamp: new Date()
+                    };
+                    setChatHistory([welcomeMessage]);
+                }
+            }, [chatHistory.length, setChatHistory]);
+
+            return React.createElement('div', { className: 'ai-coach' },
+                React.createElement('div', { className: 'container' },
+                    React.createElement('div', { className: 'coach-header' },
+                        React.createElement('h1', null, '🤖 AI Career Coach'),
+                        React.createElement('p', null, 'Get personalized career advice and guidance')
+                    ),
+                    React.createElement('div', { className: 'chat-container' },
+                        React.createElement('div', { className: 'chat-messages' },
+                            chatHistory.map(msg =>
+                                React.createElement('div', { key: msg.id, className: `message ${msg.sender}` },
+                                    React.createElement('div', { className: 'message-avatar' },
+                                        msg.sender === 'ai' ? '🤖' : '👤'
+                                    ),
+                                    React.createElement('div', { className: 'message-content' },
+                                        React.createElement('p', null, msg.message),
+                                        React.createElement('span', { className: 'message-time' },
+                                            msg.timestamp.toLocaleTimeString()
+                                        )
+                                    )
+                                )
+                            ),
+                            isTyping && React.createElement('div', { className: 'message ai' },
+                                React.createElement('div', { className: 'message-avatar' }, '🤖'),
+                                React.createElement('div', { className: 'message-content' },
+                                    React.createElement('div', { className: 'typing-indicator' },
+                                        React.createElement('span'),
+                                        React.createElement('span'),
+                                        React.createElement('span')
+                                    )
+                                )
+                            )
+                        ),
+                        React.createElement('form', { className: 'chat-form', onSubmit: handleSendMessage },
+                            React.createElement('input', {
+                                type: 'text',
+                                className: 'form-control',
+                                value: currentMessage,
+                                onChange: (e) => setCurrentMessage(e.target.value),
+                                placeholder: 'Ask me about careers, study materials, internships...',
+                                disabled: isTyping
+                            }),
+                            React.createElement('button', {
+                                type: 'submit',
+                                className: 'btn btn--primary',
+                                disabled: isTyping || !currentMessage.trim()
+                            }, 'Send')
+                        )
+                    )
+                )
+            );
+        }
+
+        // Footer Component
+        function Footer() {
+            return React.createElement('footer', { className: 'app-footer' },
+                React.createElement('div', { className: 'container' },
+                    React.createElement('div', { className: 'footer-content' },
+                        React.createElement('p', null, '© 2025 CareerAI. Complete Career Platform with Study Materials & Live Internships.'),
+                        React.createElement('p', null, 
+                            React.createElement('strong', null, 'Made by Team Malware')
+                        )
+                    )
+                )
+            );
+        }
+
+        // Render the app
+        ReactDOM.render(React.createElement(App), document.getElementById('root'));
+    </script>
+
+    <script src="app.js"></script>
+</body>
+</html>
