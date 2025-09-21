@@ -1,745 +1,1657 @@
-// Ultimate Career Platform - Fixed Navigation and Core Functionality
-// Dark Theme Career Platform with AI-Powered Guidance
+// CareerAI Pro - Enhanced JavaScript Functionality
+// Ultimate Career Guidance Platform with AI-Powered Features
 
-// Enhanced Career Data Management
-class UltimateCareerManager {
+// Global Application State and Data Management
+class CareerAIProManager {
     constructor() {
-        this.careerData = this.initializeCareerData();
-        this.studyResources = this.initializeStudyResources();
-        this.jobPlatforms = this.initializeJobPlatforms();
-        this.internshipPlatforms = this.initializeInternshipPlatforms();
-        this.aiKnowledge = this.initializeAIKnowledge();
+        this.version = '2.0.0';
+        this.apiEndpoints = {
+            jobs: 'https://api.careeraipro.com/jobs',
+            internships: 'https://api.careeraipro.com/internships',
+            courses: 'https://api.careeraipro.com/courses',
+            analytics: 'https://api.careeraipro.com/analytics'
+        };
+        this.userSession = this.initializeSession();
+        this.aiEngine = new EnhancedAIEngine();
+        this.analyticsTracker = new AnalyticsTracker();
+        this.progressManager = new ProgressManager();
         this.init();
     }
 
-    initializeCareerData() {
-        return {
-            ca: {
-                name: "Chartered Accountant",
-                description: "Financial expertise in accounting, auditing, taxation, and business advisory",
-                avgSalary: "₹6-50 LPA",
-                demandLevel: "Very High",
-                growthRate: "12% annually",
-                topSkills: ["Financial Analysis", "Taxation", "Auditing", "Business Law", "Excel"],
-                jobTitles: ["Auditor", "Tax Consultant", "Financial Analyst", "CFO", "CA Partner"]
-            },
-            engineering: {
-                name: "Engineering",
-                description: "Technical problem-solving across software, mechanical, electrical, and civil domains",
-                avgSalary: "₹4-60 LPA", 
-                demandLevel: "High",
-                growthRate: "15% annually",
-                topSkills: ["Programming", "Design", "Analytics", "Problem Solving", "Project Management"],
-                jobTitles: ["Software Engineer", "Mechanical Engineer", "Civil Engineer", "Electrical Engineer"]
-            },
-            medical: {
-                name: "Medical",
-                description: "Healthcare services including medicine, nursing, pharmacy, and allied health",
-                avgSalary: "₹5-100 LPA",
-                demandLevel: "Very High", 
-                growthRate: "8% annually",
-                topSkills: ["Clinical Knowledge", "Patient Care", "Diagnosis", "Medical Ethics", "Communication"],
-                jobTitles: ["Doctor", "Surgeon", "Nurse", "Pharmacist", "Medical Officer"]
-            },
-            mba: {
-                name: "MBA/Business",
-                description: "Business management, marketing, finance, and leadership roles",
-                avgSalary: "₹8-150 LPA",
-                demandLevel: "High",
-                growthRate: "10% annually", 
-                topSkills: ["Leadership", "Strategy", "Marketing", "Finance", "Operations"],
-                jobTitles: ["Manager", "Business Analyst", "Consultant", "VP", "CEO"]
-            },
-            law: {
-                name: "Law/Legal",
-                description: "Legal practice in corporate, criminal, civil, and constitutional law",
-                avgSalary: "₹3-80 LPA",
-                demandLevel: "Moderate",
-                growthRate: "6% annually",
-                topSkills: ["Legal Research", "Writing", "Argumentation", "Case Analysis", "Client Relations"],
-                jobTitles: ["Advocate", "Corporate Lawyer", "Judge", "Legal Advisor", "Prosecutor"]
-            },
-            design: {
-                name: "Design/Creative", 
-                description: "Creative design for digital products, graphics, and user experiences",
-                avgSalary: "₹3-50 LPA",
-                demandLevel: "Growing",
-                growthRate: "18% annually",
-                topSkills: ["Design Software", "Creativity", "Visual Communication", "User Research", "Prototyping"],
-                jobTitles: ["UI/UX Designer", "Graphic Designer", "Art Director", "Design Lead", "Creative Director"]
-            },
-            dataScience: {
-                name: "Data Science & AI",
-                description: "Analytics, machine learning, and artificial intelligence solutions",
-                avgSalary: "₹8-80 LPA",
-                demandLevel: "Very High",
-                growthRate: "25% annually",
-                topSkills: ["Python", "Machine Learning", "Statistics", "Data Visualization", "SQL"],
-                jobTitles: ["Data Scientist", "ML Engineer", "Data Analyst", "AI Researcher", "Analytics Manager"]
-            },
-            government: {
-                name: "Government Jobs",
-                description: "Public service in administration, defense, banking, and railways",
-                avgSalary: "₹3-30 LPA", 
-                demandLevel: "High",
-                growthRate: "5% annually",
-                topSkills: ["General Knowledge", "Reasoning", "Quantitative Aptitude", "English", "Current Affairs"],
-                jobTitles: ["IAS Officer", "Bank PO", "SSC Officer", "Railway Officer", "Defense Personnel"]
-            }
+    initializeSession() {
+        const session = localStorage.getItem('careerai_session');
+        return session ? JSON.parse(session) : {
+            userId: this.generateUserId(),
+            startTime: Date.now(),
+            interactions: 0,
+            completedAssessments: [],
+            bookmarkedResources: [],
+            careerGoals: [],
+            skillProgress: {}
         };
     }
 
-    initializeStudyResources() {
-        return {
-            ca: {
-                youtube: [
-                    {
-                        name: "CA Rajat Arora",
-                        url: "https://www.youtube.com/@CArajatarora",
-                        subscribers: "500K+",
-                        focus: "Foundation to Final - Complete CA Course"
-                    },
-                    {
-                        name: "Sunil Sharma CA", 
-                        url: "https://www.youtube.com/@sunilsharmaCA",
-                        subscribers: "300K+",
-                        focus: "Mathematics & Statistics for CA"
-                    },
-                    {
-                        name: "CA Praveen Sharma",
-                        url: "https://www.youtube.com/@CApraveensharma", 
-                        subscribers: "250K+",
-                        focus: "Business Law & Economics"
-                    }
-                ],
-                courses: [
-                    {
-                        name: "ICAI Learning Hub",
-                        url: "https://learning.icai.org/",
-                        price: "Free",
-                        type: "Official Institute Platform"
-                    },
-                    {
-                        name: "Unacademy CA Plus",
-                        url: "https://unacademy.com/goal/ca-foundation/TGECA",
-                        price: "₹999/month",
-                        type: "Premium Live Classes"
-                    },
-                    {
-                        name: "BYJU's CA Program",
-                        url: "https://byjus.com/ca/",
-                        price: "₹15,000/year", 
-                        type: "Comprehensive Course Package"
-                    }
-                ],
-                books: [
-                    {
-                        name: "ICAI Study Material (All Levels)",
-                        author: "ICAI Publications",
-                        price: "₹500-1500",
-                        essential: true
-                    },
-                    {
-                        name: "Munish Bhandari - Advanced Accounts",
-                        author: "CA Munish Bhandari",
-                        price: "₹800",
-                        essential: true
-                    }
-                ]
-            },
-            engineering: {
-                youtube: [
-                    {
-                        name: "Physics Wallah Engineering",
-                        url: "https://www.youtube.com/@PhysicsWallah",
-                        subscribers: "8.2M+",
-                        focus: "JEE Mains & Advanced Complete Preparation"
-                    },
-                    {
-                        name: "CodeWithHarry Programming",
-                        url: "https://www.youtube.com/@CodeWithHarry",
-                        subscribers: "3.8M+", 
-                        focus: "Programming Languages & Web Development"
-                    },
-                    {
-                        name: "Apna College",
-                        url: "https://www.youtube.com/@ApnaCollegeOfficial",
-                        subscribers: "4.5M+",
-                        focus: "Data Structures & Algorithms"
-                    }
-                ],
-                courses: [
-                    {
-                        name: "Coursera Engineering Specializations",
-                        url: "https://www.coursera.org/browse/engineering", 
-                        price: "$49/month",
-                        type: "University Certified Programs"
-                    },
-                    {
-                        name: "edX MIT Engineering",
-                        url: "https://www.edx.org/school/mitx",
-                        price: "Free audit / $99 verified",
-                        type: "MIT Level Courses"
-                    },
-                    {
-                        name: "NPTEL - IIT/IISc Courses",
-                        url: "https://nptel.ac.in/",
-                        price: "Free",
-                        type: "Government Premium Content"
-                    }
-                ],
-                platforms: [
-                    {
-                        name: "LeetCode",
-                        url: "https://leetcode.com/",
-                        focus: "Coding Interview Preparation"
-                    },
-                    {
-                        name: "HackerRank",
-                        url: "https://www.hackerrank.com/",
-                        focus: "Programming Skills Assessment"
-                    },
-                    {
-                        name: "GeeksforGeeks",
-                        url: "https://www.geeksforgeeks.org/",
-                        focus: "Computer Science Concepts"
-                    }
-                ]
-            },
-            medical: {
-                youtube: [
-                    {
-                        name: "Physics Wallah NEET",
-                        url: "https://www.youtube.com/@PhysicsWallah",
-                        subscribers: "8.2M+",
-                        focus: "Complete NEET Preparation - Physics, Chemistry, Biology"
-                    },
-                    {
-                        name: "Vedantu NEET Master",
-                        url: "https://www.youtube.com/@VedantuNEET",
-                        subscribers: "2.1M+",
-                        focus: "Live Classes & Doubt Solving"
-                    },
-                    {
-                        name: "Unacademy NEET UG",
-                        url: "https://www.youtube.com/@UnacademyNEETUG",
-                        subscribers: "1.8M+", 
-                        focus: "Top Faculty & Strategy"
-                    }
-                ],
-                courses: [
-                    {
-                        name: "BYJU's NEET Complete",
-                        url: "https://byjus.com/neet/",
-                        price: "₹30,000/year",
-                        type: "Comprehensive NEET Preparation"
-                    },
-                    {
-                        name: "Allen Online NEET",
-                        url: "https://www.allen.ac.in/",
-                        price: "₹25,000/year", 
-                        type: "Kota's #1 Institute Online"
-                    },
-                    {
-                        name: "Aakash Digital NEET",
-                        url: "https://www.aakash.ac.in/",
-                        price: "₹35,000/year",
-                        type: "Premium Digital Learning"
-                    }
-                ]
-            },
-            mba: {
-                youtube: [
-                    {
-                        name: "Unacademy CAT & MBA",
-                        url: "https://www.youtube.com/@UnacademyCAT",
-                        subscribers: "800K+",
-                        focus: "CAT Preparation & MBA Entrance"
-                    },
-                    {
-                        name: "Career Launcher",
-                        url: "https://www.youtube.com/@CareerLauncherIndia",
-                        subscribers: "600K+",
-                        focus: "MBA Entrance Exams"
-                    },
-                    {
-                        name: "MBA Crystal Ball",
-                        url: "https://www.youtube.com/@MBACrystalBall",
-                        subscribers: "400K+",
-                        focus: "MBA Strategy & GMAT"
-                    }
-                ],
-                courses: [
-                    {
-                        name: "Coursera MBA Essentials",
-                        url: "https://www.coursera.org/browse/business",
-                        price: "$49/month",
-                        type: "University Business Programs"
-                    },
-                    {
-                        name: "edX Business Administration",
-                        url: "https://www.edx.org/learn/business",
-                        price: "Free audit / $99 verified",
-                        type: "Top University MBA Prep"
-                    }
-                ]
-            },
-            law: {
-                youtube: [
-                    {
-                        name: "Legal Edge CLAT",
-                        url: "https://www.youtube.com/@LegalEdgeIndia", 
-                        subscribers: "300K+",
-                        focus: "CLAT Preparation & Law Entrance"
-                    },
-                    {
-                        name: "Law Prep Tutorial",
-                        url: "https://www.youtube.com/@LawPrepTutorial",
-                        subscribers: "150K+",
-                        focus: "Legal Aptitude & Reasoning"
-                    },
-                    {
-                        name: "Judiciary Gold",
-                        url: "https://www.youtube.com/@JudiciaryGold",
-                        subscribers: "200K+",
-                        focus: "Judicial Services Exam"
-                    }
-                ],
-                courses: [
-                    {
-                        name: "Unacademy Law Plus",
-                        url: "https://unacademy.com/goal/clat",
-                        price: "₹999/month",
-                        type: "Premium CLAT Preparation"
-                    },
-                    {
-                        name: "BYJU's CLAT Program",
-                        url: "https://byjus.com/clat/", 
-                        price: "₹20,000/year",
-                        type: "Comprehensive Law Entrance Prep"
-                    }
-                ]
-            },
-            design: {
-                youtube: [
-                    {
-                        name: "Adobe Creative Cloud",
-                        url: "https://www.youtube.com/@AdobeCreativeCloud",
-                        subscribers: "1.2M+",
-                        focus: "Design Tools & Creative Software"
-                    },
-                    {
-                        name: "Figma Official",
-                        url: "https://www.youtube.com/@Figma",
-                        subscribers: "800K+",
-                        focus: "UI/UX Design & Prototyping"
-                    },
-                    {
-                        name: "The Futur",
-                        url: "https://www.youtube.com/@thefutur",
-                        subscribers: "1.5M+",
-                        focus: "Design Business & Creativity"
-                    }
-                ],
-                courses: [
-                    {
-                        name: "Udemy Design Masterclass",
-                        url: "https://www.udemy.com/topic/design/",
-                        price: "$50-200",
-                        type: "Practical Design Skills"
-                    },
-                    {
-                        name: "Skillshare Creative",
-                        url: "https://www.skillshare.com/browse/design", 
-                        price: "$99/year",
-                        type: "Creative Learning Community"
-                    },
-                    {
-                        name: "Adobe Creative Cloud Training",
-                        url: "https://www.adobe.com/creativecloud.html",
-                        price: "$52.99/month",
-                        type: "Professional Design Suite"
-                    }
-                ]
-            }
-        };
+    generateUserId() {
+        return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     }
 
-    initializeJobPlatforms() {
-        return [
-            {
-                name: "LinkedIn Jobs India",
-                url: "https://www.linkedin.com/jobs/",
-                description: "Professional network with premium job opportunities",
-                type: "Professional Network"
-            },
-            {
-                name: "Naukri.com",
-                url: "https://www.naukri.com/",
-                description: "India's leading job portal with lakhs of opportunities",
-                type: "Job Portal"
-            },
-            {
-                name: "Indeed India",
-                url: "https://in.indeed.com/",
-                description: "Global job search engine with Indian opportunities", 
-                type: "Job Search Engine"
-            },
-            {
-                name: "Glassdoor India",
-                url: "https://www.glassdoor.co.in/",
-                description: "Jobs with company reviews and salary insights",
-                type: "Job + Reviews"
-            },
-            {
-                name: "Monster India",
-                url: "https://www.monsterindia.com/",
-                description: "Career advancement and job search platform",
-                type: "Career Platform"
-            },
-            {
-                name: "AngelList India",
-                url: "https://angel.co/",
-                description: "Startup jobs and equity opportunities",
-                type: "Startup Platform"
-            }
-        ];
+    saveSession() {
+        localStorage.setItem('careerai_session', JSON.stringify(this.userSession));
     }
 
-    initializeInternshipPlatforms() {
-        return [
-            {
-                name: "Internshala",
-                url: "https://internshala.com/",
-                description: "India's #1 internship platform with 100K+ opportunities",
-                features: ["Stipend Info", "Work from Home", "Certificate"],
-                type: "Primary Platform"
-            },
-            {
-                name: "LetsIntern", 
-                url: "https://www.letsintern.com/",
-                description: "Quality internships with top companies",
-                features: ["Premium Opportunities", "Skill Development", "Mentorship"],
-                type: "Premium Platform"
-            },
-            {
-                name: "Forage Virtual Internships",
-                url: "https://www.theforage.com/",
-                description: "Virtual work experience programs with global companies",
-                features: ["Virtual Experience", "Big Companies", "Certificate"],
-                type: "Virtual Experience"
-            },
-            {
-                name: "HelloIntern",
-                url: "https://hellointern.com/",
-                description: "Internships across diverse fields and locations",
-                features: ["Diverse Fields", "Pan India", "Easy Apply"],
-                type: "General Platform"
-            },
-            {
-                name: "Twenty19 Internships",
-                url: "https://www.twenty19.com/",
-                description: "Tech-focused internships and hackathons",
-                features: ["Tech Focus", "Hackathons", "Skill Tests"],
-                type: "Tech Platform"
-            },
-            {
-                name: "Youth4work Internships",
-                url: "https://www.youth4work.com/",
-                description: "Internships with skill assessment and preparation",
-                features: ["Skill Tests", "Preparation", "Assessment"],
-                type: "Skill-Based"
-            }
-        ];
-    }
-
-    initializeAIKnowledge() {
-        return {
-            greetings: `🚀 **Welcome to Ultimate Career AI!**
-
-I'm your comprehensive career guide with access to:
-
-📚 **Live Study Materials** - YouTube channels, courses, books, mock tests
-💼 **Real Job Opportunities** - LinkedIn, Naukri, specialized platforms  
-🎯 **Live Internships** - Internshala, LetsIntern, virtual experiences
-📊 **Career Analytics** - Salary insights, market trends, growth data
-🗺️ **Detailed Roadmaps** - Step-by-step career progression paths
-⏰ **Study Timetables** - Personalized schedules and timelines
-💡 **Motivation & Success Stories** - Inspiration for your journey
-🔗 **Direct Resource Links** - Working links to courses, jobs, internships
-
-**I can provide guidance on ANY career topic!**
-
-**Popular queries I can help with:**
-• "How to become a software engineer?"
-• "CA complete roadmap with resources"  
-• "NEET preparation strategy and materials"
-• "MBA entrance exam guidance"
-• "Law career opportunities in India"
-• "Design portfolio building tips"
-• "Government job preparation strategy"
-• "Data Science learning path"
-
-**What would you like to explore today?**`,
-
-            softwareEngineer: `🚀 **Complete Software Engineering Roadmap (6-12 months)**
-
-**💡 Why Software Engineering?**
-- High demand: 50K+ jobs available
-- Excellent growth: 25% year-over-year 
-- Remote work opportunities
-- Innovation and creativity
-
-**📚 Phase 1: Foundation (2-3 months)**
-🎥 **YouTube Learning:**
-• CodeWithHarry: https://www.youtube.com/@CodeWithHarry (3.8M+ subscribers)
-• Apna College: https://www.youtube.com/@ApnaCollegeOfficial (4.5M+ subscribers)
-• Love Babbar: https://www.youtube.com/@lovebabbar (Programming guru)
-• Thapa Technical: https://www.youtube.com/@ThapaTechnical (Web development)
-
-📱 **Essential Courses:**
-• freeCodeCamp: https://www.freecodecamp.org/ (Free, comprehensive)
-• Coursera Computer Science: https://www.coursera.org/specializations/computer-science
-• The Odin Project: https://www.theodinproject.com/ (Full-stack free)
-• Codecademy: https://www.codecademy.com/ (Interactive learning)
-
-**📚 Phase 2: Skill Building (3-4 months)**
-💻 **Practice Platforms:**
-• LeetCode: https://leetcode.com/ (Interview preparation)
-• HackerRank: https://www.hackerrank.com/ (Skill assessment)
-• CodeChef: https://www.codechef.com/ (Competitive programming)
-• GeeksforGeeks: https://www.geeksforgeeks.org/ (CS concepts)
-
-🔧 **Build Projects:**
-• Portfolio website
-• CRUD application
-• E-commerce clone
-• Real-time chat application
-
-**💼 Phase 3: Job Preparation (2-3 months)**
-🎯 **Current Job Opportunities:**
-• LinkedIn: https://www.linkedin.com/jobs/software-engineer-jobs/
-• Naukri.com: https://www.naukri.com/software-engineer-jobs
-• AngelList: https://angel.co/job-collections/software-engineer
-• Indeed: https://in.indeed.com/software-engineer-jobs
-
-**🎯 Active Internship Opportunities:**
-• Microsoft: https://careers.microsoft.com/students/
-• Google: https://careers.google.com/students/
-• Amazon: https://www.amazon.jobs/en/teams/internships-for-students
-• Internshala: https://internshala.com/internships/computer-science
-
-**💰 Salary Expectations:**
-• Fresher: ₹3-12 LPA
-• 2-5 years: ₹8-25 LPA
-• 5+ years: ₹15-50 LPA
-
-**⏰ Daily Study Schedule:**
-• 6:00-8:00 AM: Theory and concepts
-• 10:00-12:00 PM: Coding practice
-• 2:00-4:00 PM: Project work
-• 8:00-10:00 PM: Interview preparation
-
-**🎯 Success Milestones:**
-✅ Week 4: First program running
-✅ Month 2: First project completed
-✅ Month 4: Portfolio ready
-✅ Month 6: First job application
-✅ Month 8: Job interview calls
-✅ Month 10: Job offer received
-
-**💡 Motivation:** "Every expert was once a beginner. The best time to plant a tree was 20 years ago. The second best time is now. Start coding today!"
-
-**🚀 Next Steps:** Which programming language interests you most? I can provide specialized guidance!`,
-
-            ca: `💼 **Complete Chartered Accountant Roadmap (3-5 years)**
-
-**💡 Why CA?**
-- Prestigious profession with high respect
-- Excellent earning potential: ₹6-50 LPA+
-- Diverse career opportunities
-- Strong job security and growth
-
-**📚 Foundation Level (4-6 months)**
-🎥 **YouTube Champions:**
-• CA Rajat Arora: https://www.youtube.com/@CArajatarora (500K+ subscribers)
-• Sunil Sharma CA: https://www.youtube.com/@sunilsharmaCA (300K+ subscribers)
-• CA Praveen Sharma: https://www.youtube.com/@CApraveensharma (250K+ subscribers)
-• CA Swapnil Patni: https://www.youtube.com/@CASwapnilPatni (Accounts master)
-
-📱 **Premium Courses:**
-• ICAI Learning Hub: https://learning.icai.org/ (Official, Free access)
-• Unacademy CA Plus: https://unacademy.com/goal/ca-foundation/ (₹999/month)
-• BYJU's CA: https://byjus.com/ca/ (₹15,000/year, Comprehensive)
-• Vedantu CA: https://www.vedantu.com/ca (Expert faculty)
-
-**📚 Intermediate Level (8-12 months)**
-📖 **Essential Books:**
-• ICAI Study Material (Official, ₹500-1000)
-• Munish Bhandari Advanced Accounts (₹800)
-• Tulsian Business Law (₹600)
-• Padhuka Reference Books (₹400-600 each)
-
-🧪 **Mock Test Series:**
-• ICAI Test Series: https://learning.icai.org/ (₹500, Official)
-• Testbook CA: https://testbook.com/ca (₹299/month)
-• CA Gyaan: https://cagyaan.com/ (Free tests available)
-
-**📚 Final Level + Articleship (3 years)**
-💼 **Articleship Opportunities:**
-• Big 4: Deloitte, PwC, EY, KPMG
-• Mid-tier firms: Grant Thornton, BDO, RSM
-• Small firms: Local CA practices
-
-**💼 Current Job Market:**
-🎯 **Live Job Opportunities:**
-• LinkedIn CA Jobs: https://www.linkedin.com/jobs/chartered-accountant-jobs/
-• Naukri CA: https://www.naukri.com/chartered-accountant-jobs
-• TimesJobs: https://www.timesjobs.com/candidate/job-search.html?searchType=personalizedSearch&txtKeywords=chartered+accountant
-• Monster CA: https://www.monsterindia.com/jobs/chartered-accountant
-
-**💰 Salary Progression:**
-• Article Assistant: ₹8,000-15,000/month
-• Newly Qualified CA: ₹6-12 LPA
-• 3-5 years experience: ₹12-25 LPA
-• 5+ years: ₹25-50 LPA+
-• CA Partner/CFO: ₹50 LPA+
-
-**💡 Motivation:** "CA is not just a degree, it's a brand. Every business needs a CA. Your expertise will shape India's economy!"`,
-
-            medical: `🩺 **Complete Medical Career Roadmap (6-10 years)**
-
-**💡 Why Medical Career?**
-- Noble profession serving humanity
-- High respect and job security  
-- Excellent earning potential: ₹5-100 LPA+
-- Diverse specialization opportunities
-- Global career prospects
-
-**📚 NEET Preparation (1-2 years)**
-🎥 **YouTube Power Channels:**
-• Physics Wallah NEET: https://www.youtube.com/@PhysicsWallah (8.2M+ subscribers)
-• Vedantu NEET: https://www.youtube.com/@VedantuNEET (2.1M+ subscribers)  
-• Unacademy NEET: https://www.youtube.com/@UnacademyNEETUG (1.8M+ subscribers)
-• BYJU's NEET: https://www.youtube.com/@BYJUS (Animated learning)
-
-📱 **Premium NEET Courses:**
-• BYJU's NEET Program: https://byjus.com/neet/ (₹30,000/year)
-• Allen Online: https://www.allen.ac.in/ (₹25,000/year)
-• Aakash Digital: https://www.aakash.ac.in/ (₹35,000/year)
-• Vedantu Master: https://www.vedantu.com/neet (Live interaction)
-
-📚 **Essential NEET Books:**
-• NCERT (Class 11 & 12) - Foundation
-• HC Verma Physics (₹400) - Must have
-• Trueman's Biology (₹600) - Complete coverage
-• OP Tandon Chemistry (₹500) - Comprehensive
-
-**🧪 Mock Tests & Practice:**
-• Embibe AI: https://www.embibe.com/ (AI-powered preparation)
-• NTA Mock Tests: https://nta.ac.in/ (Official practice)
-• Aakash Test Series (₹2000)
-• Allen Test Series (₹1500)
-
-**💼 Current Medical Job Market:**
-🎯 **Live Opportunities:**
-• LinkedIn Medical: https://www.linkedin.com/jobs/medical-jobs/
-• Naukri Healthcare: https://www.naukri.com/medical-jobs
-• Health Jobs India: https://www.healthjobsindia.com/
-• MedJobsIndia: https://www.medjobsindia.com/
-
-**💰 Medical Career Salary:**
-• MBBS Intern: ₹15,000-25,000/month
-• Medical Officer: ₹5-8 LPA
-• Specialist Doctor: ₹12-30 LPA
-• Super Specialist: ₹25-100 LPA+
-
-**💡 Motivation:** "Medicine is not just a career, it's a calling. Every life you save makes this journey worthwhile!"`,
-
-            default: `🎯 **Ultimate Career AI - Your Complete Guide**
-
-I can provide detailed roadmaps and resources for:
-
-💼 **CA (Chartered Accountant)** - Complete 3-5 year roadmap with YouTube channels, courses, job opportunities
-
-⚙️ **Engineering** - JEE preparation, programming skills, job market analysis  
-
-🩺 **Medical** - NEET preparation, medical college selection, career options
-
-📈 **MBA/Business** - CAT/GMAT preparation, business skills, management careers
-
-⚖️ **Law/Legal** - CLAT preparation, legal specializations, job market
-
-🎨 **Design/Creative** - Portfolio building, design tools, creative opportunities
-
-🤖 **Data Science & AI** - Programming foundation, ML roadmap, high-paying careers
-
-🏛️ **Government Jobs** - UPSC, SSC, Banking exam preparation
-
-**💡 Just ask me specifically about any field!**
-Examples: "How to become a software engineer?" or "CA complete roadmap"`
-        };
-    }
-
-    generateResponse(userMessage) {
-        const message = userMessage.toLowerCase();
-        
-        if (message.includes('software') || message.includes('programming') || message.includes('developer') || message.includes('coding')) {
-            return this.aiKnowledge.softwareEngineer;
-        }
-        
-        if (message.includes('ca') || message.includes('chartered accountant') || message.includes('accounting')) {
-            return this.aiKnowledge.ca;
-        }
-        
-        if (message.includes('medical') || message.includes('doctor') || message.includes('neet') || message.includes('mbbs')) {
-            return this.aiKnowledge.medical;
-        }
-        
-        if (message.includes('hello') || message.includes('hi') || message.includes('start') || message.includes('help')) {
-            return this.aiKnowledge.greetings;
-        }
-        
-        return this.aiKnowledge.default;
+    trackInteraction(type, data = {}) {
+        this.userSession.interactions++;
+        this.analyticsTracker.track(type, data);
+        this.saveSession();
     }
 
     init() {
-        console.log('🚀 Ultimate Career Manager initialized');
+        this.setupGlobalEventListeners();
+        this.initializeAnimations();
+        this.loadUserPreferences();
+        console.log('🚀 CareerAI Pro Manager Initialized Successfully!');
+    }
+
+    setupGlobalEventListeners() {
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'k':
+                        e.preventDefault();
+                        this.focusSearchOrChat();
+                        break;
+                    case 'h':
+                        e.preventDefault();
+                        this.goToHome();
+                        break;
+                    case '/':
+                        e.preventDefault();
+                        this.showKeyboardShortcuts();
+                        break;
+                }
+            }
+        });
+
+        // Intersection Observer for animations
+        this.setupIntersectionObserver();
+
+        // Online/Offline status
+        window.addEventListener('online', () => this.handleOnlineStatus(true));
+        window.addEventListener('offline', () => this.handleOnlineStatus(false));
+    }
+
+    focusSearchOrChat() {
+        const chatInput = document.querySelector('.chat-input');
+        const searchInput = document.querySelector('input[type="search"]');
+        
+        if (chatInput && chatInput.offsetParent !== null) {
+            chatInput.focus();
+        } else if (searchInput) {
+            searchInput.focus();
+        }
+    }
+
+    goToHome() {
+        const homeButton = document.querySelector('.logo');
+        if (homeButton) homeButton.click();
+    }
+
+    showKeyboardShortcuts() {
+        this.createNotification('Keyboard Shortcuts', 'Ctrl+K: Focus Search/Chat | Ctrl+H: Home | Ctrl+/: Show shortcuts', 'info', 5000);
+    }
+
+    setupIntersectionObserver() {
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                    this.trackInteraction('element_viewed', { 
+                        element: entry.target.className,
+                        timestamp: Date.now()
+                    });
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements when they're added to DOM
+        setTimeout(() => {
+            document.querySelectorAll('.cyber-card, .cyber-panel, .field-card, .resource-card').forEach(el => {
+                observer.observe(el);
+            });
+        }, 1000);
+    }
+
+    initializeAnimations() {
+        // Add CSS classes for animations
+        const style = document.createElement('style');
+        style.textContent = `
+            .animate-in {
+                animation: slideInUp 0.6s ease-out forwards;
+            }
+            
+            @keyframes slideInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    loadUserPreferences() {
+        const preferences = localStorage.getItem('careerai_preferences');
+        if (preferences) {
+            const prefs = JSON.parse(preferences);
+            this.applyUserPreferences(prefs);
+        }
+    }
+
+    applyUserPreferences(preferences) {
+        if (preferences.theme) {
+            document.documentElement.setAttribute('data-theme', preferences.theme);
+        }
+        if (preferences.animations === false) {
+            document.documentElement.style.setProperty('--animation-speed', '0s');
+        }
+    }
+
+    handleOnlineStatus(isOnline) {
+        const message = isOnline ? 
+            'Connection restored! All features available.' : 
+            'You\'re offline. Some features may be limited.';
+        
+        this.createNotification('Connection Status', message, isOnline ? 'success' : 'warning', 3000);
+    }
+
+    createNotification(title, message, type = 'info', duration = 5000) {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+            <div class="notification-header">
+                <h4>${title}</h4>
+                <button class="notification-close">&times;</button>
+            </div>
+            <p>${message}</p>
+        `;
+
+        // Add notification styles
+        Object.assign(notification.style, {
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            maxWidth: '400px',
+            padding: '16px',
+            background: 'var(--glass-bg)',
+            backdropFilter: 'blur(20px)',
+            border: 'var(--border-glow)',
+            borderRadius: '12px',
+            color: 'var(--text-primary)',
+            zIndex: '10000',
+            animation: 'slideInRight 0.3s ease-out'
+        });
+
+        document.body.appendChild(notification);
+
+        // Auto-remove
+        setTimeout(() => {
+            notification.style.animation = 'slideOutRight 0.3s ease-out';
+            setTimeout(() => notification.remove(), 300);
+        }, duration);
+
+        // Close button
+        notification.querySelector('.notification-close').onclick = () => notification.remove();
     }
 }
 
-// Initialize career manager
-window.ultimateCareerManager = new UltimateCareerManager();
+// Enhanced AI Engine with Advanced Career Guidance
+class EnhancedAIEngine {
+    constructor() {
+        this.knowledgeBase = this.initializeKnowledgeBase();
+        this.conversationHistory = [];
+        this.userContext = {};
+        this.responseTemplates = this.initializeResponseTemplates();
+    }
 
-// Initialize notification system  
-window.notificationSystem = {
-    show: function(message, type = 'info', duration = 5000) {
-        console.log(`${type.toUpperCase()}: ${message}`);
-    },
-    success: function(message) { this.show(message, 'success'); },
-    error: function(message) { this.show(message, 'error'); },
-    info: function(message) { this.show(message, 'info'); }
-};
-
-// Global utility functions
-window.CareerUtils = {
-    formatIndianNumber: (num) => num.toLocaleString('en-IN'),
-    getCareerColor: (field) => {
-        const colors = {
-            ca: '#00d4ff', engineering: '#00ff88', medical: '#8b5cf6',
-            law: '#ff6b35', mba: '#fbbf24', design: '#ec4899',
-            dataScience: '#06b6d4', government: '#10b981'
+    initializeKnowledgeBase() {
+        return {
+            careerPaths: {
+                'software engineer': {
+                    roadmap: [
+                        'Learn programming fundamentals (3-6 months)',
+                        'Master a programming language (6-12 months)',
+                        'Build portfolio projects (ongoing)',
+                        'Learn frameworks and tools (6 months)',
+                        'Practice algorithmic thinking (ongoing)',
+                        'Apply for internships/jobs'
+                    ],
+                    skills: ['Programming', 'Problem Solving', 'Debugging', 'Testing', 'Version Control'],
+                    resources: [
+                        { name: 'FreeCodeCamp', url: 'https://www.freecodecamp.org/', type: 'Course' },
+                        { name: 'LeetCode', url: 'https://leetcode.com/', type: 'Practice' },
+                        { name: 'GitHub', url: 'https://github.com/', type: 'Portfolio' }
+                    ],
+                    salaryRanges: {
+                        entry: '₹5-12 LPA',
+                        mid: '₹15-30 LPA',
+                        senior: '₹35-60 LPA'
+                    },
+                    marketDemand: 'Very High',
+                    growthProjection: '+22% by 2030'
+                },
+                'data scientist': {
+                    roadmap: [
+                        'Master statistics and mathematics (6-9 months)',
+                        'Learn Python/R programming (3-6 months)',
+                        'Study machine learning algorithms (6-12 months)',
+                        'Practice with real datasets (ongoing)',
+                        'Build ML projects portfolio (6 months)',
+                        'Specialize in domain (6-12 months)'
+                    ],
+                    skills: ['Statistics', 'Python/R', 'Machine Learning', 'Data Visualization', 'SQL'],
+                    resources: [
+                        { name: 'Coursera ML Course', url: 'https://www.coursera.org/learn/machine-learning', type: 'Course' },
+                        { name: 'Kaggle', url: 'https://www.kaggle.com/', type: 'Practice' },
+                        { name: 'Pandas Documentation', url: 'https://pandas.pydata.org/', type: 'Reference' }
+                    ],
+                    salaryRanges: {
+                        entry: '₹8-15 LPA',
+                        mid: '₹20-40 LPA',
+                        senior: '₹45-80 LPA'
+                    },
+                    marketDemand: 'Extremely High',
+                    growthProjection: '+35% by 2030'
+                },
+                'chartered accountant': {
+                    roadmap: [
+                        'Complete CA Foundation (6 months)',
+                        'CA Intermediate preparation (12-18 months)',
+                        'Articleship training (3 years)',
+                        'CA Final examination (6-12 months)',
+                        'Specialize in area of interest',
+                        'Build professional network'
+                    ],
+                    skills: ['Accounting', 'Auditing', 'Taxation', 'Financial Analysis', 'Compliance'],
+                    resources: [
+                        { name: 'ICAI Study Material', url: 'https://www.icai.org/', type: 'Official' },
+                        { name: 'CA Rajat Arora YouTube', url: 'https://www.youtube.com/@CArajatarora', type: 'Video' },
+                        { name: 'Unacademy CA', url: 'https://unacademy.com/ca/', type: 'Course' }
+                    ],
+                    salaryRanges: {
+                        entry: '₹6-12 LPA',
+                        mid: '₹15-25 LPA',
+                        senior: '₹30-50 LPA'
+                    },
+                    marketDemand: 'High',
+                    growthProjection: '+15% by 2030'
+                }
+            },
+            interviewTips: {
+                technical: [
+                    'Practice coding problems daily',
+                    'Understand data structures and algorithms',
+                    'Be able to explain your thought process',
+                    'Practice system design for senior roles',
+                    'Review your past projects thoroughly'
+                ],
+                behavioral: [
+                    'Use STAR method for behavioral questions',
+                    'Prepare specific examples from your experience',
+                    'Research the company culture and values',
+                    'Practice explaining complex concepts simply',
+                    'Show enthusiasm and genuine interest'
+                ]
+            },
+            salaryNegotiation: [
+                'Research market rates for your role and location',
+                'Document your achievements and contributions',
+                'Consider total compensation, not just base salary',
+                'Practice your negotiation conversation',
+                'Be prepared to walk away if needed',
+                'Negotiate timing - not just during hiring'
+            ]
         };
-        return colors[field] || '#00d4ff';
+    }
+
+    initializeResponseTemplates() {
+        return {
+            roadmap: `🗺️ **{field} Career Roadmap:**
+
+{roadmapSteps}
+
+**💰 Salary Expectations:**
+• Entry Level: {entrySalary}
+• Mid Level: {midSalary}  
+• Senior Level: {seniorSalary}
+
+**📊 Market Outlook:**
+• Demand: {marketDemand}
+• Growth: {growthProjection}
+
+**🎯 Next Steps:**
+{nextSteps}
+
+Would you like me to elaborate on any specific step or provide more resources for {field}?`,
+
+            resources: `📚 **Top {field} Resources:**
+
+{resourceList}
+
+**💡 Study Strategy:**
+{studyStrategy}
+
+**⏰ Recommended Timeline:**
+{timeline}
+
+Need help with any specific resource or have questions about the learning path?`,
+
+            interview: `💼 **{field} Interview Preparation Guide:**
+
+**🔧 Technical Preparation:**
+{technicalTips}
+
+**🤝 Behavioral Questions:**
+{behavioralTips}
+
+**📋 Common {field} Interview Topics:**
+{commonTopics}
+
+**🎯 Pro Tips:**
+{proTips}
+
+Would you like me to provide mock interview questions or specific preparation strategies?`,
+
+            transition: `🔄 **Career Transition to {field}:**
+
+**📊 Skills Gap Analysis:**
+{skillsGap}
+
+**🎓 Learning Plan:**
+{learningPlan}
+
+**💼 Transitioning Strategy:**
+{transitionStrategy}
+
+**⏱️ Expected Timeline:**
+{expectedTimeline}
+
+**💰 Financial Considerations:**
+{financialAdvice}
+
+Let me know if you need help with any specific aspect of your career transition!`
+        };
+    }
+
+    generateResponse(userInput, context = {}) {
+        const processedInput = this.preprocessInput(userInput);
+        const intent = this.detectIntent(processedInput);
+        const response = this.generateContextualResponse(intent, processedInput, context);
+        
+        this.conversationHistory.push({
+            user: userInput,
+            ai: response,
+            timestamp: Date.now(),
+            intent: intent
+        });
+
+        return response;
+    }
+
+    preprocessInput(input) {
+        return {
+            original: input,
+            lowercase: input.toLowerCase(),
+            tokens: input.toLowerCase().split(/\s+/),
+            hasNumbers: /\d/.test(input),
+            hasQuestionWords: /\b(what|how|when|where|why|which|who)\b/.test(input.toLowerCase())
+        };
+    }
+
+    detectIntent(processedInput) {
+        const { lowercase, tokens } = processedInput;
+
+        // Career roadmap intent
+        if (tokens.some(token => ['roadmap', 'path', 'become', 'career', 'steps'].includes(token))) {
+            return 'roadmap';
+        }
+
+        // Resources intent  
+        if (tokens.some(token => ['resources', 'learn', 'courses', 'books', 'materials', 'study'].includes(token))) {
+            return 'resources';
+        }
+
+        // Interview preparation intent
+        if (tokens.some(token => ['interview', 'preparation', 'questions', 'tips'].includes(token))) {
+            return 'interview';
+        }
+
+        // Salary information intent
+        if (tokens.some(token => ['salary', 'pay', 'compensation', 'earnings'].includes(token))) {
+            return 'salary';
+        }
+
+        // Career transition intent
+        if (tokens.some(token => ['transition', 'switch', 'change', 'pivot'].includes(token))) {
+            return 'transition';
+        }
+
+        // Skills development intent
+        if (tokens.some(token => ['skills', 'improve', 'develop', 'enhance'].includes(token))) {
+            return 'skills';
+        }
+
+        return 'general';
+    }
+
+    generateContextualResponse(intent, processedInput, context) {
+        const field = this.extractCareerField(processedInput.original);
+        
+        switch (intent) {
+            case 'roadmap':
+                return this.generateRoadmapResponse(field);
+            case 'resources':
+                return this.generateResourcesResponse(field);
+            case 'interview':
+                return this.generateInterviewResponse(field);
+            case 'salary':
+                return this.generateSalaryResponse(field);
+            case 'transition':
+                return this.generateTransitionResponse(field, context);
+            case 'skills':
+                return this.generateSkillsResponse(field);
+            default:
+                return this.generateGeneralResponse(processedInput.original, context);
+        }
+    }
+
+    extractCareerField(input) {
+        const fieldKeywords = {
+            'software engineer': ['software', 'programming', 'coding', 'developer', 'engineer'],
+            'data scientist': ['data science', 'machine learning', 'data scientist', 'ml', 'ai'],
+            'chartered accountant': ['ca', 'accountant', 'accounting', 'finance', 'audit'],
+            'doctor': ['medical', 'doctor', 'physician', 'medicine', 'mbbs'],
+            'lawyer': ['law', 'lawyer', 'legal', 'advocate', 'attorney'],
+            'designer': ['design', 'designer', 'ui', 'ux', 'graphic']
+        };
+
+        const inputLower = input.toLowerCase();
+        
+        for (const [field, keywords] of Object.entries(fieldKeywords)) {
+            if (keywords.some(keyword => inputLower.includes(keyword))) {
+                return field;
+            }
+        }
+        
+        return 'general';
+    }
+
+    generateRoadmapResponse(field) {
+        const careerInfo = this.knowledgeBase.careerPaths[field];
+        
+        if (!careerInfo) {
+            return this.generateGeneralRoadmapResponse(field);
+        }
+
+        const roadmapSteps = careerInfo.roadmap.map((step, index) => 
+            `${index + 1}. ${step}`
+        ).join('\n');
+
+        const nextSteps = [
+            `Start with ${careerInfo.roadmap[0]}`,
+            `Join ${field} communities and forums`,
+            `Follow industry leaders on LinkedIn`,
+            `Set up learning schedule and milestones`
+        ].map((step, index) => `${index + 1}. ${step}`).join('\n');
+
+        return this.responseTemplates.roadmap
+            .replace('{field}', field)
+            .replace('{roadmapSteps}', roadmapSteps)
+            .replace('{entrySalary}', careerInfo.salaryRanges.entry)
+            .replace('{midSalary}', careerInfo.salaryRanges.mid)
+            .replace('{seniorSalary}', careerInfo.salaryRanges.senior)
+            .replace('{marketDemand}', careerInfo.marketDemand)
+            .replace('{growthProjection}', careerInfo.growthProjection)
+            .replace('{nextSteps}', nextSteps);
+    }
+
+    generateResourcesResponse(field) {
+        const careerInfo = this.knowledgeBase.careerPaths[field];
+        
+        if (!careerInfo) {
+            return this.generateGeneralResourcesResponse(field);
+        }
+
+        const resourceList = careerInfo.resources.map((resource, index) => 
+            `${index + 1}. **${resource.name}** (${resource.type})\n   🔗 ${resource.url}`
+        ).join('\n\n');
+
+        const studyStrategy = [
+            'Dedicate 2-3 hours daily for consistent learning',
+            'Balance theory with hands-on practice',
+            'Join study groups or online communities',
+            'Track your progress with projects'
+        ].map((tip, index) => `• ${tip}`).join('\n');
+
+        const timeline = field === 'software engineer' ? '6-12 months for job readiness' :
+                        field === 'data scientist' ? '12-18 months for comprehensive skills' :
+                        field === 'chartered accountant' ? '4-5 years including articleship' :
+                        '6-18 months depending on background';
+
+        return this.responseTemplates.resources
+            .replace('{field}', field)
+            .replace('{resourceList}', resourceList)
+            .replace('{studyStrategy}', studyStrategy)
+            .replace('{timeline}', timeline);
+    }
+
+    generateInterviewResponse(field) {
+        const technicalTips = this.knowledgeBase.interviewTips.technical
+            .map(tip => `• ${tip}`)
+            .join('\n');
+
+        const behavioralTips = this.knowledgeBase.interviewTips.behavioral
+            .map(tip => `• ${tip}`)
+            .join('\n');
+
+        const commonTopics = field === 'software engineer' ? 
+            ['Data Structures & Algorithms', 'System Design', 'Object-Oriented Programming', 'Database Design'] :
+            field === 'data scientist' ?
+            ['Machine Learning Algorithms', 'Statistical Methods', 'Data Preprocessing', 'Model Evaluation'] :
+            ['Domain-specific technical knowledge', 'Problem-solving scenarios', 'Industry best practices'];
+
+        const topicsList = commonTopics.map(topic => `• ${topic}`).join('\n');
+
+        const proTips = [
+            'Research the company and role thoroughly',
+            'Prepare questions to ask the interviewer',
+            'Practice explaining concepts in simple terms',
+            'Be honest about what you don\'t know',
+            'Follow up with a thank-you email'
+        ].map(tip => `• ${tip}`).join('\n');
+
+        return this.responseTemplates.interview
+            .replace('{field}', field)
+            .replace('{technicalTips}', technicalTips)
+            .replace('{behavioralTips}', behavioralTips)
+            .replace('{commonTopics}', topicsList)
+            .replace('{proTips}', proTips);
+    }
+
+    generateSalaryResponse(field) {
+        const careerInfo = this.knowledgeBase.careerPaths[field];
+        
+        if (!careerInfo) {
+            return `💰 **Salary Information for ${field}:**
+
+Salary ranges vary significantly based on:
+• Location (metro vs non-metro cities)
+• Company size and type (startup vs MNC)
+• Years of experience
+• Specific skills and expertise
+• Industry domain
+
+**General Guidelines:**
+• Entry Level (0-2 years): ₹3-8 LPA
+• Mid Level (3-6 years): ₹8-20 LPA
+• Senior Level (7+ years): ₹20-50+ LPA
+
+**Negotiation Tips:**
+${this.knowledgeBase.salaryNegotiation.map(tip => `• ${tip}`).join('\n')}
+
+Would you like specific salary data for your location or more negotiation strategies?`;
+        }
+
+        return `💰 **${field} Salary Breakdown:**
+
+**💼 Experience-based Ranges:**
+• **Entry Level (0-2 years):** ${careerInfo.salaryRanges.entry}
+• **Mid Level (3-6 years):** ${careerInfo.salaryRanges.mid}
+• **Senior Level (7+ years):** ${careerInfo.salaryRanges.senior}
+
+**📈 Market Factors:**
+• Demand Level: ${careerInfo.marketDemand}
+• Growth Projection: ${careerInfo.growthProjection}
+• Location Impact: 30-50% variation between cities
+
+**💡 Salary Enhancement Tips:**
+• Specialize in high-demand skills
+• Contribute to open source projects
+• Build a strong professional network
+• Continuously update your skills
+• Consider freelancing for extra income
+
+**🎯 Negotiation Strategy:**
+${this.knowledgeBase.salaryNegotiation.slice(0, 3).map(tip => `• ${tip}`).join('\n')}
+
+Need specific advice for your situation or location-based data?`;
+    }
+
+    generateTransitionResponse(field, context) {
+        const currentField = context.currentField || 'your current field';
+        
+        return `🔄 **Career Transition to ${field}:**
+
+**📊 Transition Analysis:**
+• **From:** ${currentField}
+• **To:** ${field}
+• **Difficulty:** Moderate to High (depends on background)
+
+**🎓 Skills Development Plan:**
+1. **Assessment Phase (1-2 weeks)**
+   • Identify transferable skills
+   • Map skill gaps
+   • Set learning objectives
+
+2. **Foundation Building (2-6 months)**
+   • Complete fundamental courses
+   • Start building basic projects
+   • Join relevant communities
+
+3. **Skill Enhancement (6-12 months)**
+   • Advanced coursework
+   • Real-world project experience
+   • Build portfolio/resume
+
+4. **Job Preparation (1-3 months)**
+   • Interview preparation
+   • Networking and applications
+   • Freelance/contract opportunities
+
+**💰 Financial Planning:**
+• Budget for courses and certifications
+• Plan for potential income gap
+• Consider part-time transition
+• Build emergency fund (3-6 months expenses)
+
+**🤝 Network Building:**
+• Attend industry meetups and conferences
+• Connect with professionals on LinkedIn
+• Find mentors in your target field
+• Join professional associations
+
+**⚠️ Common Challenges:**
+• Imposter syndrome in new field
+• Salary expectations adjustment
+• Competition with experienced candidates
+• Learning curve steepness
+
+Would you like a detailed transition timeline or specific advice for your situation?`;
+    }
+
+    generateSkillsResponse(field) {
+        const careerInfo = this.knowledgeBase.careerPaths[field];
+        
+        if (!careerInfo) {
+            return this.generateGeneralSkillsResponse(field);
+        }
+
+        const skillsList = careerInfo.skills.map(skill => `• ${skill}`).join('\n');
+
+        return `🎯 **Essential Skills for ${field}:**
+
+**🔧 Core Technical Skills:**
+${skillsList}
+
+**💡 Skill Development Strategy:**
+
+**Phase 1: Foundation (Months 1-3)**
+• Master the fundamental concepts
+• Start with beginner-friendly resources
+• Practice basic exercises daily
+• Join online communities for support
+
+**Phase 2: Intermediate (Months 4-8)**
+• Work on practical projects
+• Contribute to open source projects
+• Start building your portfolio
+• Network with professionals
+
+**Phase 3: Advanced (Months 9-12+)**
+• Specialize in specific areas
+• Take on challenging projects
+• Mentor others in the community
+• Stay updated with industry trends
+
+**📚 Learning Resources:**
+${careerInfo.resources.map(resource => `• ${resource.name}: ${resource.url}`).join('\n')}
+
+**🏆 Skill Validation:**
+• Build projects that showcase abilities
+• Contribute to open source projects
+• Obtain relevant certifications
+• Participate in competitions/hackathons
+
+**📈 Continuous Improvement:**
+• Follow industry leaders and blogs
+• Attend conferences and workshops
+• Join professional communities
+• Practice regularly and consistently
+
+Which specific skill would you like to focus on first?`;
+    }
+
+    generateGeneralResponse(input, context) {
+        const generalResponses = [
+            `🤖 **I'm here to help with your career journey!** 
+
+I can provide detailed guidance on:
+
+**📚 Learning & Development:**
+• Personalized career roadmaps
+• Study resources and course recommendations
+• Skill development strategies
+• Certification guidance
+
+**💼 Job Search & Career:**
+• Interview preparation tips
+• Resume building advice
+• Salary negotiation strategies
+• Career transition planning
+
+**🎯 Specific Career Fields:**
+• Software Engineering & Tech
+• Data Science & AI/ML
+• Finance & Chartered Accountancy
+• Healthcare & Medical
+• Law & Legal Services
+• Design & Creative Arts
+
+**📊 Market Insights:**
+• Industry trends and demand
+• Salary ranges and growth projections
+• Skill requirements analysis
+
+Try asking me something like:
+• "How to become a data scientist?"
+• "Software engineer interview tips"
+• "Best resources for learning web development"
+• "Career transition from finance to tech"
+
+What specific career topic can I help you with today?`,
+
+            `🚀 **Welcome to CareerAI Pro!**
+
+I'm your comprehensive career advisor with access to:
+• Real-time industry data and trends
+• Personalized learning recommendations
+• Career roadmaps for all major fields
+• Salary insights and market analysis
+
+**Popular Questions I Can Help With:**
+• Career planning and goal setting
+• Skill development strategies
+• Job search and interview preparation
+• Salary negotiation and career growth
+• Industry transitions and pivots
+
+**Current Hot Topics:**
+• AI/ML career opportunities
+• Remote work strategies
+• Emerging tech skills in demand
+• Post-pandemic career shifts
+
+What would you like to explore first?`,
+
+            `💡 **Career Guidance Made Personal!**
+
+I analyze your questions and provide tailored advice based on:
+• Current market trends
+• Industry best practices
+• Successful career trajectories
+• Real-world experience insights
+
+**My Specialties:**
+• 📊 Data-driven career recommendations
+• 🎓 Customized learning paths
+• 💼 Interview and job search strategies
+• 📈 Career progression planning
+• 🔄 Career transition support
+
+Ask me anything about your professional development, and I'll provide detailed, actionable guidance!
+
+What career challenge would you like to tackle today?`
+        ];
+
+        return generalResponses[Math.floor(Math.random() * generalResponses.length)];
+    }
+
+    generateGeneralRoadmapResponse(field) {
+        return `🗺️ **General Career Roadmap for ${field}:**
+
+**Phase 1: Research & Foundation (1-3 months)**
+• Research the field thoroughly
+• Understand job requirements and market demand
+• Identify required skills and qualifications
+• Connect with professionals in the field
+
+**Phase 2: Skill Development (6-18 months)**
+• Take relevant courses and certifications
+• Build practical experience through projects
+• Develop both technical and soft skills
+• Create a professional portfolio
+
+**Phase 3: Job Preparation (2-6 months)**
+• Optimize resume and LinkedIn profile
+• Practice interview skills
+• Apply for entry-level positions
+• Network actively in the industry
+
+**Phase 4: Career Growth (Ongoing)**
+• Continuously update skills
+• Seek mentorship and feedback
+• Take on challenging projects
+• Build professional reputation
+
+**💡 Success Tips:**
+• Set specific, measurable goals
+• Track your progress regularly
+• Join professional communities
+• Stay updated with industry trends
+
+Would you like me to provide more specific guidance for ${field}?`;
+    }
+
+    generateGeneralResourcesResponse(field) {
+        return `📚 **Learning Resources for ${field}:**
+
+**🌐 Online Learning Platforms:**
+• Coursera - University courses and specializations
+• edX - Free courses from top universities
+• Udemy - Practical, project-based courses
+• LinkedIn Learning - Professional development
+• Skillshare - Creative and business skills
+
+**📖 Additional Resources:**
+• YouTube - Free tutorials and lectures
+• Medium - Industry insights and tutorials
+• Reddit - Community discussions and advice
+• Stack Overflow - Technical problem solving
+• GitHub - Open source projects and code examples
+
+**📚 Books & Publications:**
+• Industry-specific textbooks and guides
+• Biography of successful professionals
+• Industry magazines and journals
+• Research papers and case studies
+
+**🤝 Community & Networking:**
+• Professional associations
+• Local meetups and events
+• Online forums and discussion groups
+• Social media professional groups
+
+**💡 Learning Strategy:**
+• Combine multiple learning formats
+• Practice hands-on skills regularly
+• Join study groups or communities
+• Set up a consistent learning schedule
+
+Which type of resource would you like specific recommendations for?`;
+    }
+
+    generateGeneralSkillsResponse(field) {
+        return `🎯 **Key Skills for ${field} Success:**
+
+**🔧 Technical Skills:**
+• Field-specific technical competencies
+• Industry-standard tools and software
+• Analytical and problem-solving abilities
+• Data analysis and interpretation
+
+**🤝 Soft Skills:**
+• Communication and presentation
+• Leadership and teamwork
+• Time management and organization
+• Critical thinking and creativity
+• Adaptability and learning agility
+
+**📈 Professional Skills:**
+• Project management
+• Client relationship management
+• Business acumen and industry knowledge
+• Networking and relationship building
+
+**🎓 Skill Development Approach:**
+
+**1. Self-Assessment:**
+• Identify current skill level
+• Recognize strengths and weaknesses
+• Set specific improvement goals
+
+**2. Learning Plan:**
+• Choose appropriate learning resources
+• Set realistic timelines
+• Balance theory with practice
+
+**3. Practical Application:**
+• Work on real projects
+• Seek feedback from experts
+• Apply skills in different contexts
+
+**4. Continuous Improvement:**
+• Stay updated with industry trends
+• Regular skill assessment
+• Expand into related areas
+
+What specific skills would you like to develop first in ${field}?`;
+    }
+}
+
+// Analytics and Progress Tracking System
+class AnalyticsTracker {
+    constructor() {
+        this.events = JSON.parse(localStorage.getItem('careerai_analytics') || '[]');
+        this.sessionStart = Date.now();
+    }
+
+    track(eventType, data = {}) {
+        const event = {
+            type: eventType,
+            data: data,
+            timestamp: Date.now(),
+            sessionId: this.getSessionId(),
+            url: window.location.pathname,
+            userAgent: navigator.userAgent.substring(0, 100)
+        };
+
+        this.events.push(event);
+        this.saveEvents();
+        
+        // Keep only last 1000 events to manage storage
+        if (this.events.length > 1000) {
+            this.events = this.events.slice(-1000);
+            this.saveEvents();
+        }
+    }
+
+    getSessionId() {
+        let sessionId = sessionStorage.getItem('careerai_session_id');
+        if (!sessionId) {
+            sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            sessionStorage.setItem('careerai_session_id', sessionId);
+        }
+        return sessionId;
+    }
+
+    saveEvents() {
+        localStorage.setItem('careerai_analytics', JSON.stringify(this.events));
+    }
+
+    getAnalytics() {
+        return {
+            totalEvents: this.events.length,
+            sessionDuration: Date.now() - this.sessionStart,
+            topEvents: this.getTopEvents(),
+            userEngagement: this.calculateEngagement(),
+            learningProgress: this.getLearningProgress()
+        };
+    }
+
+    getTopEvents() {
+        const eventCounts = {};
+        this.events.forEach(event => {
+            eventCounts[event.type] = (eventCounts[event.type] || 0) + 1;
+        });
+
+        return Object.entries(eventCounts)
+            .sort(([,a], [,b]) => b - a)
+            .slice(0, 10)
+            .map(([type, count]) => ({ type, count }));
+    }
+
+    calculateEngagement() {
+        const recentEvents = this.events.filter(event => 
+            Date.now() - event.timestamp < 24 * 60 * 60 * 1000 // Last 24 hours
+        );
+
+        return {
+            eventsLast24h: recentEvents.length,
+            avgSessionTime: this.calculateAverageSessionTime(),
+            returnVisits: this.calculateReturnVisits()
+        };
+    }
+
+    calculateAverageSessionTime() {
+        const sessions = {};
+        this.events.forEach(event => {
+            if (!sessions[event.sessionId]) {
+                sessions[event.sessionId] = { start: event.timestamp, end: event.timestamp };
+            } else {
+                sessions[event.sessionId].end = Math.max(sessions[event.sessionId].end, event.timestamp);
+            }
+        });
+
+        const sessionTimes = Object.values(sessions).map(session => 
+            session.end - session.start
+        );
+
+        return sessionTimes.length > 0 ? 
+            sessionTimes.reduce((a, b) => a + b, 0) / sessionTimes.length : 0;
+    }
+
+    calculateReturnVisits() {
+        const uniqueSessions = new Set(this.events.map(event => event.sessionId));
+        return uniqueSessions.size;
+    }
+
+    getLearningProgress() {
+        const learningEvents = this.events.filter(event => 
+            ['resource_accessed', 'assessment_completed', 'course_viewed', 'skill_practiced'].includes(event.type)
+        );
+
+        return {
+            totalLearningEvents: learningEvents.length,
+            resourcesAccessed: learningEvents.filter(e => e.type === 'resource_accessed').length,
+            assessmentsCompleted: learningEvents.filter(e => e.type === 'assessment_completed').length,
+            coursesViewed: learningEvents.filter(e => e.type === 'course_viewed').length
+        };
+    }
+
+    exportAnalytics() {
+        const analytics = this.getAnalytics();
+        const exportData = {
+            summary: analytics,
+            events: this.events,
+            exportedAt: new Date().toISOString()
+        };
+
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `careerai_analytics_${Date.now()}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+}
+
+// Progress Management System
+class ProgressManager {
+    constructor() {
+        this.progressData = this.loadProgressData();
+        this.goals = [];
+        this.milestones = this.initializeMilestones();
+    }
+
+    loadProgressData() {
+        const saved = localStorage.getItem('careerai_progress');
+        return saved ? JSON.parse(saved) : {
+            skillLevels: {},
+            completedCourses: [],
+            achievedMilestones: [],
+            totalStudyHours: 0,
+            streakDays: 0,
+            lastActivityDate: null,
+            careerGoals: [],
+            learningPaths: []
+        };
+    }
+
+    initializeMilestones() {
+        return [
+            { id: 1, title: 'First Career Assessment', description: 'Complete your first career assessment', points: 100, icon: '🎯' },
+            { id: 2, title: 'Learning Path Created', description: 'Create your personalized learning path', points: 150, icon: '🗺️' },
+            { id: 3, title: 'First Resource Accessed', description: 'Access your first learning resource', points: 50, icon: '📚' },
+            { id: 4, title: 'Week Streak', description: 'Maintain a 7-day learning streak', points: 300, icon: '🔥' },
+            { id: 5, title: 'First Application', description: 'Apply for your first job/internship', points: 200, icon: '📝' },
+            { id: 6, title: 'AI Coach Interaction', description: 'Have a conversation with the AI coach', points: 75, icon: '🤖' },
+            { id: 7, title: 'Portfolio Project', description: 'Complete your first portfolio project', points: 400, icon: '🚀' },
+            { id: 8, title: 'Network Builder', description: 'Connect with 10 professionals', points: 250, icon: '🤝' },
+            { id: 9, title: 'Interview Ready', description: 'Complete interview preparation', points: 350, icon: '💼' },
+            { id: 10, title: 'Career Goal Achieved', description: 'Achieve your first career goal', points: 1000, icon: '🏆' }
+        ];
+    }
+
+    trackActivity(activityType, data = {}) {
+        const today = new Date().toDateString();
+        
+        // Update streak
+        this.updateStreak(today);
+        
+        // Track specific activity
+        switch (activityType) {
+            case 'assessment_completed':
+                this.checkMilestone(1);
+                break;
+            case 'learning_path_created':
+                this.checkMilestone(2);
+                break;
+            case 'resource_accessed':
+                this.checkMilestone(3);
+                break;
+            case 'job_application':
+                this.checkMilestone(5);
+                break;
+            case 'ai_interaction':
+                this.checkMilestone(6);
+                break;
+            case 'project_completed':
+                this.checkMilestone(7);
+                break;
+            case 'interview_prep':
+                this.checkMilestone(9);
+                break;
+            case 'goal_achieved':
+                this.checkMilestone(10);
+                break;
+        }
+
+        // Check streak milestones
+        if (this.progressData.streakDays >= 7) {
+            this.checkMilestone(4);
+        }
+
+        this.saveProgress();
+    }
+
+    updateStreak(today) {
+        const lastActivity = this.progressData.lastActivityDate;
+        
+        if (lastActivity !== today) {
+            const yesterday = new Date(Date.now() - 86400000).toDateString();
+            
+            if (lastActivity === yesterday) {
+                this.progressData.streakDays += 1;
+            } else if (lastActivity !== today) {
+                this.progressData.streakDays = 1;
+            }
+            
+            this.progressData.lastActivityDate = today;
+        }
+    }
+
+    checkMilestone(milestoneId) {
+        if (!this.progressData.achievedMilestones.includes(milestoneId)) {
+            const milestone = this.milestones.find(m => m.id === milestoneId);
+            if (milestone) {
+                this.progressData.achievedMilestones.push(milestoneId);
+                this.showAchievementNotification(milestone);
+                this.saveProgress();
+            }
+        }
+    }
+
+    showAchievementNotification(milestone) {
+        // Create and show achievement notification
+        const notification = document.createElement('div');
+        notification.className = 'achievement-notification';
+        notification.innerHTML = `
+            <div class="achievement-content">
+                <div class="achievement-icon">${milestone.icon}</div>
+                <div class="achievement-text">
+                    <h4>🎉 Achievement Unlocked!</h4>
+                    <h3>${milestone.title}</h3>
+                    <p>${milestone.description}</p>
+                    <span class="points">+${milestone.points} points</span>
+                </div>
+            </div>
+        `;
+
+        // Styling
+        Object.assign(notification.style, {
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            background: 'var(--gradient-success)',
+            color: 'var(--bg-primary)',
+            padding: '20px',
+            borderRadius: '16px',
+            boxShadow: 'var(--glow-success)',
+            zIndex: '10000',
+            minWidth: '320px',
+            animation: 'achievementSlide 0.5s ease-out'
+        });
+
+        // Add animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes achievementSlide {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes achievementSlideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        document.body.appendChild(notification);
+
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            notification.style.animation = 'achievementSlideOut 0.5s ease-out';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 500);
+        }, 5000);
+
+        // Click to close
+        notification.onclick = () => notification.remove();
+    }
+
+    getProgressSummary() {
+        const totalPoints = this.calculateTotalPoints();
+        const completionPercentage = Math.round((this.progressData.achievedMilestones.length / this.milestones.length) * 100);
+
+        return {
+            totalPoints,
+            currentStreak: this.progressData.streakDays,
+            achievementsUnlocked: this.progressData.achievedMilestones.length,
+            totalAchievements: this.milestones.length,
+            completionPercentage,
+            nextMilestone: this.getNextMilestone(),
+            recentActivities: this.getRecentActivities()
+        };
+    }
+
+    calculateTotalPoints() {
+        return this.progressData.achievedMilestones.reduce((total, milestoneId) => {
+            const milestone = this.milestones.find(m => m.id === milestoneId);
+            return total + (milestone ? milestone.points : 0);
+        }, 0);
+    }
+
+    getNextMilestone() {
+        return this.milestones.find(m => !this.progressData.achievedMilestones.includes(m.id));
+    }
+
+    getRecentActivities() {
+        // This would return recent user activities based on analytics data
+        return [];
+    }
+
+    saveProgress() {
+        localStorage.setItem('careerai_progress', JSON.stringify(this.progressData));
+    }
+
+    exportProgress() {
+        const progressSummary = this.getProgressSummary();
+        const exportData = {
+            summary: progressSummary,
+            fullData: this.progressData,
+            milestones: this.milestones,
+            exportedAt: new Date().toISOString()
+        };
+
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `careerai_progress_${Date.now()}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+}
+
+// Resume Builder Advanced Features
+class ResumeBuilderPro {
+    constructor() {
+        this.templates = this.initializeTemplates();
+        this.atsKeywords = this.loadATSKeywords();
+        this.resumeData = this.initializeResumeData();
+    }
+
+    initializeTemplates() {
+        return {
+            modern: {
+                name: 'Modern Professional',
+                preview: '/templates/modern.png',
+                features: ['ATS-friendly', 'Clean design', 'Two-column layout']
+            },
+            executive: {
+                name: 'Executive',
+                preview: '/templates/executive.png',
+                features: ['Leadership focused', 'Achievement highlights', 'Premium design']
+            },
+            technical: {
+                name: 'Technical/IT',
+                preview: '/templates/technical.png',
+                features: ['Skills showcase', 'Project highlights', 'GitHub integration']
+            },
+            creative: {
+                name: 'Creative',
+                preview: '/templates/creative.png',
+                features: ['Portfolio integration', 'Visual elements', 'Brand focused']
+            }
+        };
+    }
+
+    loadATSKeywords() {
+        return {
+            'software engineer': [
+                'JavaScript', 'Python', 'React', 'Node.js', 'API', 'Database',
+                'Git', 'Agile', 'Scrum', 'Testing', 'Debugging', 'Algorithm'
+            ],
+            'data scientist': [
+                'Machine Learning', 'Python', 'R', 'SQL', 'Statistics', 'Analytics',
+                'Pandas', 'NumPy', 'Scikit-learn', 'Visualization', 'Big Data'
+            ],
+            'marketing': [
+                'Digital Marketing', 'SEO', 'SEM', 'Analytics', 'Campaign',
+                'Brand', 'Content', 'Social Media', 'Lead Generation', 'ROI'
+            ]
+        };
+    }
+
+    initializeResumeData() {
+        return {
+            personalInfo: {},
+            summary: '',
+            experience: [],
+            education: [],
+            skills: [],
+            projects: [],
+            certifications: [],
+            achievements: []
+        };
+    }
+
+    generateAISuggestions(section, currentData) {
+        const suggestions = {
+            summary: [
+                'Start with your years of experience and key expertise',
+                'Include quantifiable achievements when possible',
+                'Mention specific technologies or methodologies you excel in',
+                'Highlight what value you bring to employers'
+            ],
+            experience: [
+                'Use action verbs to start each bullet point',
+                'Quantify your achievements with numbers and percentages',
+                'Focus on results and impact rather than just responsibilities',
+                'Tailor descriptions to match job requirements'
+            ],
+            skills: [
+                'Group skills by category (Technical, Soft Skills, etc.)',
+                'Include both hard and soft skills',
+                'Prioritize skills mentioned in job descriptions',
+                'Keep skill levels realistic and honest'
+            ]
+        };
+
+        return suggestions[section] || ['Consider adding more specific details', 'Use keywords relevant to your target role'];
+    }
+
+    analyzeATSCompatibility(resumeText, jobDescription = '') {
+        const analysis = {
+            score: 0,
+            issues: [],
+            suggestions: [],
+            keywordMatches: []
+        };
+
+        // Basic ATS checks
+        let score = 85; // Start with base score
+
+        // Check for problematic elements
+        if (resumeText.includes('|') || resumeText.includes('•')) {
+            analysis.issues.push('Special characters may not parse correctly');
+            score -= 5;
+        }
+
+        // Check for contact info
+        if (!resumeText.includes('@') || !resumeText.match(/\d{10}/)) {
+            analysis.issues.push('Contact information may be incomplete');
+            score -= 10;
+        }
+
+        // Check for keywords if job description provided
+        if (jobDescription) {
+            const jobKeywords = jobDescription.toLowerCase().match(/\b\w{4,}\b/g) || [];
+            const resumeKeywords = resumeText.toLowerCase().match(/\b\w{4,}\b/g) || [];
+            
+            const matches = jobKeywords.filter(keyword => resumeKeywords.includes(keyword));
+            analysis.keywordMatches = [...new Set(matches)].slice(0, 10);
+            
+            const keywordScore = Math.min((matches.length / Math.max(jobKeywords.length * 0.3, 1)) * 100, 25);
+            score += keywordScore;
+        }
+
+        // Generate suggestions
+        if (analysis.issues.length === 0) {
+            analysis.suggestions.push('Great! Your resume appears to be ATS-friendly');
+        } else {
+            analysis.suggestions.push('Consider addressing the identified issues for better ATS compatibility');
+        }
+
+        if (jobDescription && analysis.keywordMatches.length < 5) {
+            analysis.suggestions.push('Try to include more relevant keywords from the job description');
+        }
+
+        analysis.score = Math.min(Math.max(Math.round(score), 0), 100);
+        return analysis;
+    }
+
+    exportToPDF(resumeData, templateName = 'modern') {
+        // This would integrate with a PDF generation library
+        console.log('Exporting resume to PDF...', { resumeData, templateName });
+        
+        // Simulated PDF generation
+        const blob = new Blob(['Resume PDF content would be here'], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `resume_${Date.now()}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+}
+
+// Utility Functions
+const CareerAIUtils = {
+    // Format duration in human-readable format
+    formatDuration: (months) => {
+        if (months < 12) {
+            return `${months} month${months !== 1 ? 's' : ''}`;
+        } else {
+            const years = Math.floor(months / 12);
+            const remainingMonths = months % 12;
+            let result = `${years} year${years !== 1 ? 's' : ''}`;
+            if (remainingMonths > 0) {
+                result += ` ${remainingMonths} month${remainingMonths !== 1 ? 's' : ''}`;
+            }
+            return result;
+        }
     },
-    generateId: () => Date.now().toString(36) + Math.random().toString(36).substr(2),
+
+    // Format salary ranges
+    formatSalary: (amount) => {
+        if (amount >= 10000000) {
+            return `₹${(amount / 10000000).toFixed(1)} Cr`;
+        } else if (amount >= 100000) {
+            return `₹${(amount / 100000).toFixed(1)} LPA`;
+        } else {
+            return `₹${amount.toLocaleString()}`;
+        }
+    },
+
+    // Debounce function for search inputs
     debounce: (func, wait) => {
         let timeout;
-        return function(...args) {
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
             clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), wait);
+            timeout = setTimeout(later, wait);
         };
+    },
+
+    // Generate unique IDs
+    generateId: (prefix = 'id') => {
+        return `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    },
+
+    // Validate email format
+    isValidEmail: (email) => {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    },
+
+    // Calculate reading time for content
+    calculateReadingTime: (text) => {
+        const wordsPerMinute = 200;
+        const words = text.trim().split(/\s+/).length;
+        const minutes = Math.ceil(words / wordsPerMinute);
+        return `${minutes} min read`;
+    },
+
+    // Format numbers with appropriate suffixes
+    formatNumber: (num) => {
+        if (num >= 1000000) {
+            return (num / 1000000).toFixed(1) + 'M';
+        } else if (num >= 1000) {
+            return (num / 1000).toFixed(1) + 'K';
+        } else {
+            return num.toString();
+        }
+    },
+
+    // Copy text to clipboard
+    copyToClipboard: async (text) => {
+        try {
+            await navigator.clipboard.writeText(text);
+            return true;
+        } catch (err) {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            return true;
+        }
+    },
+
+    // Local storage helpers with expiration
+    setStorageWithExpiry: (key, value, ttl) => {
+        const now = new Date();
+        const item = {
+            value: value,
+            expiry: now.getTime() + ttl
+        };
+        localStorage.setItem(key, JSON.stringify(item));
+    },
+
+    getStorageWithExpiry: (key) => {
+        const itemStr = localStorage.getItem(key);
+        if (!itemStr) return null;
+
+        try {
+            const item = JSON.parse(itemStr);
+            const now = new Date();
+
+            if (now.getTime() > item.expiry) {
+                localStorage.removeItem(key);
+                return null;
+            }
+            return item.value;
+        } catch (e) {
+            return null;
+        }
     }
 };
 
-console.log('🚀 Ultimate Career Platform JavaScript Loaded Successfully!');
+// Initialize Enhanced Features
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🌟 CareerAI Pro Enhanced Features Loading...');
+    
+    // Initialize core systems
+    try {
+        window.careerAIManager = new CareerAIProManager();
+        window.resumeBuilder = new ResumeBuilderPro();
+        window.CareerAIUtils = CareerAIUtils;
+        
+        console.log('✅ All Enhanced Features Loaded Successfully!');
+        
+        // Dispatch ready event for React components
+        window.dispatchEvent(new CustomEvent('careerai:enhanced:ready', {
+            detail: {
+                timestamp: Date.now(),
+                version: '2.0.0',
+                features: [
+                    'advanced-ai-engine',
+                    'analytics-tracking',
+                    'progress-management',
+                    'resume-builder-pro',
+                    'ats-compatibility-checker',
+                    'career-roadmap-generator',
+                    'skill-assessment-engine'
+                ]
+            }
+        }));
+
+        // Track initialization
+        if (window.careerAIManager) {
+            window.careerAIManager.trackInteraction('app_initialized', {
+                version: '2.0.0',
+                timestamp: Date.now(),
+                userAgent: navigator.userAgent
+            });
+        }
+
+    } catch (error) {
+        console.error('❌ Error initializing CareerAI Pro features:', error);
+    }
+});
+
+// Global error handler
+window.addEventListener('error', (event) => {
+    console.error('CareerAI Pro Error:', event.error);
+    
+    if (window.careerAIManager) {
+        window.careerAIManager.trackInteraction('error_occurred', {
+            message: event.error?.message,
+            filename: event.filename,
+            line: event.lineno,
+            timestamp: Date.now()
+        });
+    }
+});
+
+// Performance monitoring
+window.addEventListener('load', () => {
+    const loadTime = performance.now();
+    console.log(`🚀 CareerAI Pro loaded in ${loadTime.toFixed(2)}ms`);
+    
+    if (window.careerAIManager) {
+        window.careerAIManager.trackInteraction('page_load_complete', {
+            loadTime: Math.round(loadTime),
+            timestamp: Date.now()
+        });
+    }
+});
+
+// Export for ES6 modules (if needed)
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        CareerAIProManager,
+        EnhancedAIEngine,
+        AnalyticsTracker,
+        ProgressManager,
+        ResumeBuilderPro,
+        CareerAIUtils
+    };
+}
