@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Career Platform - AI-Powered Career Guidance</title>
-    <meta name="description" content="Ultimate dark-themed career platform with AI guidance, real job opportunities, live internships, and comprehensive study materials for all career fields.">
+    <title>CareerAI Pro - Ultimate Career Guidance Platform</title>
+    <meta name="description" content="Ultimate AI-powered career platform with study materials, jobs, internships, resume builder, ATS checker and personalized guidance for all career fields.">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div id="root"></div>
@@ -20,279 +20,638 @@
         // App Context
         const AppContext = createContext();
 
-        // Career Fields Data with Enhanced Information
-        const careerFieldsData = {
-            ca: {
-                name: "Chartered Accountant",
-                icon: "💼",
-                description: "Finance and accounting expertise with audit and taxation skills",
-                demandLevel: "Very High",
-                avgSalary: "₹6-50 LPA",
-                studyDuration: "3-5 years",
-                jobCount: 15000,
-                internshipCount: 3000,
-                color: "#00d4ff"
+        // Application Data from JSON
+        const appData = {
+            "darkTheme": {
+                "colors": {
+                    "bgPrimary": "#0a0a0f",
+                    "bgSecondary": "#1a1a2e", 
+                    "bgCard": "#16213e",
+                    "accentCyan": "#00d4ff",
+                    "accentCoral": "#ff6b6b",
+                    "accentTeal": "#4ecdc4",
+                    "accentBlue": "#45b7d1",
+                    "textPrimary": "#ffffff",
+                    "textSecondary": "#e6e6e6",
+                    "success": "#00ff88",
+                    "warning": "#ffb347"
+                }
             },
-            engineering: {
-                name: "Engineering",
-                icon: "⚙️",
-                description: "Technical problem-solving across multiple engineering disciplines",
-                demandLevel: "High",
-                avgSalary: "₹4-60 LPA", 
-                studyDuration: "4 years",
-                jobCount: 50000,
-                internshipCount: 12000,
-                color: "#00ff88"
+            "studyMaterials": {
+                "softwareEngineering": {
+                    "category": "Software Engineering & Tech",
+                    "icon": "💻",
+                    "resources": [
+                        {
+                            "name": "FreeCodeCamp",
+                            "url": "https://www.freecodecamp.org/",
+                            "type": "Interactive Course",
+                            "description": "Complete full-stack development bootcamp",
+                            "rating": 4.8,
+                            "free": true
+                        },
+                        {
+                            "name": "Codecademy",
+                            "url": "https://www.codecademy.com/",
+                            "type": "Interactive Learning",
+                            "description": "Hands-on programming courses",
+                            "rating": 4.6,
+                            "free": false
+                        },
+                        {
+                            "name": "LeetCode",
+                            "url": "https://leetcode.com/",
+                            "type": "Coding Practice",
+                            "description": "Algorithm and data structure problems",
+                            "rating": 4.5,
+                            "free": "Partial"
+                        },
+                        {
+                            "name": "GitHub Learning Lab",
+                            "url": "https://lab.github.com/",
+                            "type": "Version Control",
+                            "description": "Learn Git and GitHub",
+                            "rating": 4.7,
+                            "free": true
+                        },
+                        {
+                            "name": "YouTube - Traversy Media",
+                            "url": "https://www.youtube.com/c/TraversyMedia",
+                            "type": "Video Tutorials",
+                            "description": "Web development tutorials",
+                            "rating": 4.9,
+                            "free": true
+                        }
+                    ]
+                },
+                "ca": {
+                    "category": "Chartered Accountant (CA)",
+                    "icon": "📊", 
+                    "resources": [
+                        {
+                            "name": "ICAI Official",
+                            "url": "https://www.icai.org/",
+                            "type": "Official Materials",
+                            "description": "Official CA study materials and updates",
+                            "rating": 5.0,
+                            "free": true
+                        },
+                        {
+                            "name": "CA Rajat Arora",
+                            "url": "https://www.youtube.com/@CArajatarora",
+                            "type": "YouTube Channel",
+                            "description": "Complete CA preparation videos",
+                            "rating": 4.8,
+                            "free": true
+                        },
+                        {
+                            "name": "Unacademy CA",
+                            "url": "https://unacademy.com/ca/",
+                            "type": "Online Coaching",
+                            "description": "Structured CA courses with expert faculty",
+                            "rating": 4.6,
+                            "free": false
+                        },
+                        {
+                            "name": "BYJU'S CA",
+                            "url": "https://byjus.com/ca/",
+                            "type": "Online Learning",
+                            "description": "Interactive CA preparation platform",
+                            "rating": 4.4,
+                            "free": false
+                        }
+                    ]
+                },
+                "medical": {
+                    "category": "Medical (NEET/MBBS)",
+                    "icon": "🩺",
+                    "resources": [
+                        {
+                            "name": "Physics Wallah NEET",
+                            "url": "https://www.pw.live/neet-online-coaching",
+                            "type": "Online Coaching",
+                            "description": "Complete NEET preparation by Alakh Pandey",
+                            "rating": 4.9,
+                            "free": "Partial"
+                        },
+                        {
+                            "name": "Vedantu NEET",
+                            "url": "https://www.vedantu.com/neet",
+                            "type": "Live Classes",
+                            "description": "Interactive NEET preparation classes",
+                            "rating": 4.6,
+                            "free": false
+                        },
+                        {
+                            "name": "NCERT Official",
+                            "url": "https://ncert.nic.in/",
+                            "type": "Textbooks",
+                            "description": "Official NCERT textbooks for NEET",
+                            "rating": 5.0,
+                            "free": true
+                        },
+                        {
+                            "name": "Khan Academy Medicine",
+                            "url": "https://www.khanacademy.org/science/health-and-medicine",
+                            "type": "Video Lectures",
+                            "description": "Medical science fundamentals",
+                            "rating": 4.7,
+                            "free": true
+                        }
+                    ]
+                },
+                "upsc": {
+                    "category": "UPSC/Civil Services",
+                    "icon": "🏛️",
+                    "resources": [
+                        {
+                            "name": "Study IQ",
+                            "url": "https://www.studyiq.com/",
+                            "type": "Online Platform",
+                            "description": "Complete UPSC preparation platform",
+                            "rating": 4.7,
+                            "free": "Partial"
+                        },
+                        {
+                            "name": "Drishti IAS",
+                            "url": "https://www.drishtiias.com/",
+                            "type": "Current Affairs",
+                            "description": "Daily current affairs and analysis",
+                            "rating": 4.8,
+                            "free": "Partial"
+                        },
+                        {
+                            "name": "Vision IAS",
+                            "url": "https://www.visionias.in/",
+                            "type": "Study Materials",
+                            "description": "Comprehensive UPSC study materials",
+                            "rating": 4.6,
+                            "free": "Partial"
+                        },
+                        {
+                            "name": "ClearIAS",
+                            "url": "https://www.clearias.com/",
+                            "type": "Free Resources",
+                            "description": "Free UPSC preparation materials",
+                            "rating": 4.5,
+                            "free": true
+                        }
+                    ]
+                },
+                "engineering": {
+                    "category": "Engineering (JEE)",
+                    "icon": "⚙️",
+                    "resources": [
+                        {
+                            "name": "Physics Wallah JEE",
+                            "url": "https://www.pw.live/jee-online-coaching",
+                            "type": "Online Coaching",
+                            "description": "Complete JEE preparation by Alakh Pandey",
+                            "rating": 4.9,
+                            "free": "Partial"
+                        },
+                        {
+                            "name": "Vedantu JEE",
+                            "url": "https://www.vedantu.com/jee",
+                            "type": "Live Classes",
+                            "description": "Interactive JEE preparation",
+                            "rating": 4.6,
+                            "free": false
+                        },
+                        {
+                            "name": "MIT OpenCourseWare",
+                            "url": "https://ocw.mit.edu/",
+                            "type": "University Courses",
+                            "description": "Free MIT engineering courses",
+                            "rating": 4.9,
+                            "free": true
+                        }
+                    ]
+                },
+                "business": {
+                    "category": "Business/MBA",
+                    "icon": "💼",
+                    "resources": [
+                        {
+                            "name": "Coursera Business",
+                            "url": "https://www.coursera.org/browse/business",
+                            "type": "Online Courses",
+                            "description": "Business courses from top universities",
+                            "rating": 4.7,
+                            "free": "Partial"
+                        },
+                        {
+                            "name": "Harvard Business Review",
+                            "url": "https://hbr.org/",
+                            "type": "Articles & Case Studies",
+                            "description": "Latest business insights and strategies",
+                            "rating": 4.8,
+                            "free": "Partial"
+                        },
+                        {
+                            "name": "LinkedIn Learning",
+                            "url": "https://www.linkedin.com/learning/",
+                            "type": "Professional Courses",
+                            "description": "Business and leadership skills",
+                            "rating": 4.5,
+                            "free": false
+                        }
+                    ]
+                },
+                "law": {
+                    "category": "Law/Legal",
+                    "icon": "⚖️",
+                    "resources": [
+                        {
+                            "name": "Coursera Law",
+                            "url": "https://www.coursera.org/browse/social-sciences/law",
+                            "type": "University Courses",
+                            "description": "Law courses from top institutions",
+                            "rating": 4.6,
+                            "free": "Partial"
+                        },
+                        {
+                            "name": "Legal Studies India",
+                            "url": "https://www.legalstudiesindia.com/",
+                            "type": "Articles & Resources",
+                            "description": "Indian legal system resources",
+                            "rating": 4.4,
+                            "free": true
+                        },
+                        {
+                            "name": "iPleaders",
+                            "url": "https://blog.ipleaders.in/",
+                            "type": "Legal Blog",
+                            "description": "Legal career guidance and articles",
+                            "rating": 4.3,
+                            "free": true
+                        }
+                    ]
+                },
+                "design": {
+                    "category": "Design/Creative",
+                    "icon": "🎨",
+                    "resources": [
+                        {
+                            "name": "Dribbble",
+                            "url": "https://dribbble.com/",
+                            "type": "Design Community",
+                            "description": "Design inspiration and community",
+                            "rating": 4.7,
+                            "free": "Partial"
+                        },
+                        {
+                            "name": "Adobe Creative Tutorials",
+                            "url": "https://helpx.adobe.com/",
+                            "type": "Video Tutorials",
+                            "description": "Official Adobe software tutorials",
+                            "rating": 4.6,
+                            "free": true
+                        },
+                        {
+                            "name": "Skillshare Design",
+                            "url": "https://www.skillshare.com/browse/design",
+                            "type": "Online Classes",
+                            "description": "Creative design courses",
+                            "rating": 4.5,
+                            "free": false
+                        },
+                        {
+                            "name": "Canva Design School",
+                            "url": "https://www.canva.com/designschool/",
+                            "type": "Free Tutorials",
+                            "description": "Design basics and techniques",
+                            "rating": 4.4,
+                            "free": true
+                        }
+                    ]
+                }
             },
-            medical: {
-                name: "Medical",
-                icon: "🩺",
-                description: "Healthcare and medical services for patient care and treatment",
-                demandLevel: "Very High",
-                avgSalary: "₹5-100 LPA",
-                studyDuration: "5.5 years", 
-                jobCount: 25000,
-                internshipCount: 5000,
-                color: "#8b5cf6"
-            },
-            law: {
-                name: "Law/Legal",
-                icon: "⚖️",
-                description: "Legal expertise in litigation, corporate law, and legal advisory",
-                demandLevel: "Moderate",
-                avgSalary: "₹3-80 LPA",
-                studyDuration: "3-5 years",
-                jobCount: 8000,
-                internshipCount: 2000,
-                color: "#ff6b35"
-            },
-            mba: {
-                name: "MBA/Business", 
-                icon: "📈",
-                description: "Business management and leadership across various industries",
-                demandLevel: "High",
-                avgSalary: "₹8-150 LPA",
-                studyDuration: "2 years",
-                jobCount: 30000,
-                internshipCount: 8000,
-                color: "#fbbf24"
-            },
-            design: {
-                name: "Design/Creative",
-                icon: "🎨", 
-                description: "Creative design for digital products, graphics, and user experiences",
-                demandLevel: "Growing",
-                avgSalary: "₹3-50 LPA",
-                studyDuration: "1-4 years",
-                jobCount: 12000,
-                internshipCount: 4000,
-                color: "#ec4899"
-            },
-            dataScience: {
-                name: "Data Science & AI",
-                icon: "🤖",
-                description: "Analytics, machine learning, and artificial intelligence solutions", 
-                demandLevel: "Very High",
-                avgSalary: "₹8-80 LPA",
-                studyDuration: "1-3 years",
-                jobCount: 20000,
-                internshipCount: 6000,
-                color: "#06b6d4"
-            },
-            government: {
-                name: "Government Jobs",
-                icon: "🏛️",
-                description: "Public service roles in administration, banking, and defense",
-                demandLevel: "High", 
-                avgSalary: "₹3-30 LPA",
-                studyDuration: "1-3 years prep",
-                jobCount: 40000,
-                internshipCount: 1000,
-                color: "#10b981"
+            "pieChartData": {
+                "careerPopularity": {
+                    "labels": ["Software Engineering", "Medical", "CA", "Engineering", "MBA", "UPSC", "Law", "Design"],
+                    "data": [28, 18, 15, 12, 10, 8, 5, 4],
+                    "colors": ["#00d4ff", "#ff6b6b", "#4ecdc4", "#45b7d1", "#ffb347", "#00ff88", "#9c88ff", "#ff9f43"]
+                },
+                "salaryRanges": {
+                    "labels": ["0-5 LPA", "5-15 LPA", "15-30 LPA", "30+ LPA"],
+                    "data": [25, 35, 25, 15],
+                    "colors": ["#ff6b6b", "#ffb347", "#00ff88", "#00d4ff"]
+                },
+                "jobLocations": {
+                    "labels": ["Bangalore", "Hyderabad", "Pune", "Mumbai", "Delhi", "Chennai", "Others"],
+                    "data": [25, 18, 15, 12, 10, 8, 12],
+                    "colors": ["#00d4ff", "#ff6b6b", "#4ecdc4", "#45b7d1", "#ffb347", "#00ff88", "#9c88ff"]
+                }
             }
         };
 
-        // Study Materials Data
-        const studyMaterials = {
-            ca: {
-                youtube: [
-                    {name: "CA Rajat Arora", url: "https://www.youtube.com/@CArajatarora", subscribers: "500K+", focus: "Foundation to Final"},
-                    {name: "Sunil Sharma CA", url: "https://www.youtube.com/@sunilsharmaCA", subscribers: "300K+", focus: "Mathematics & Statistics"},
-                    {name: "CA Praveen Sharma", url: "https://www.youtube.com/@CApraveensharma", subscribers: "250K+", focus: "Law & Economics"}
-                ],
-                courses: [
-                    {name: "ICAI Learning Hub", url: "https://learning.icai.org/", price: "Free", type: "Official"},
-                    {name: "Unacademy CA", url: "https://unacademy.com/goal/ca-foundation/TGECA", price: "₹999/month", type: "Premium"},
-                    {name: "BYJU's CA", url: "https://byjus.com/ca/", price: "₹15,000/year", type: "Comprehensive"}
-                ],
-                books: [
-                    {name: "ICAI Study Material", author: "ICAI", price: "₹500", essential: true},
-                    {name: "Munish Bhandari Accounts", author: "Munish Bhandari", price: "₹800", essential: true},
-                    {name: "Tulsian Business Law", author: "P.C. Tulsian", price: "₹600", essential: false}
-                ],
-                mockTests: [
-                    {name: "ICAI Test Series", url: "https://learning.icai.org/", price: "₹500", official: true},
-                    {name: "Testbook CA", url: "https://testbook.com/ca", price: "₹299/month", official: false},
-                    {name: "CA Gyaan", url: "https://cagyaan.com/", price: "Free", official: false}
-                ]
-            },
-            engineering: {
-                youtube: [
-                    {name: "Physics Wallah", url: "https://www.youtube.com/@PhysicsWallah", subscribers: "8.2M+", focus: "JEE/NEET Complete"},
-                    {name: "Tute Dude", url: "https://www.youtube.com/@TuteDude", subscribers: "1.5M+", focus: "JEE Advanced Physics"},
-                    {name: "CodeWithHarry", url: "https://www.youtube.com/@CodeWithHarry", subscribers: "3.8M+", focus: "Programming"}
-                ],
-                courses: [
-                    {name: "Coursera Engineering", url: "https://www.coursera.org/browse/engineering", price: "$49/month", type: "University"},
-                    {name: "edX MIT", url: "https://www.edx.org/school/mitx", price: "Free/Verified", type: "Premium"},
-                    {name: "NPTEL", url: "https://nptel.ac.in/", price: "Free", type: "Government"}
-                ],
-                platforms: [
-                    {name: "LeetCode", url: "https://leetcode.com/", price: "Free/Premium", focus: "Coding Practice"},
-                    {name: "HackerRank", url: "https://www.hackerrank.com/", price: "Free", focus: "Skills Assessment"},
-                    {name: "GeeksforGeeks", url: "https://www.geeksforgeeks.org/", price: "Free/Premium", focus: "CS Concepts"}
-                ]
-            },
-            medical: {
-                youtube: [
-                    {name: "Physics Wallah NEET", url: "https://www.youtube.com/@PhysicsWallah", subscribers: "8.2M+", focus: "Complete NEET"},
-                    {name: "Vedantu NEET", url: "https://www.youtube.com/@VedantuNEET", subscribers: "2.1M+", focus: "Live Classes"},
-                    {name: "Unacademy NEET", url: "https://www.youtube.com/@UnacademyNEETUG", subscribers: "1.8M+", focus: "Top Faculty"}
-                ],
-                courses: [
-                    {name: "BYJU's NEET", url: "https://byjus.com/neet/", price: "₹30,000/year", type: "Comprehensive"},
-                    {name: "Allen Online", url: "https://www.allen.ac.in/", price: "₹25,000/year", type: "Coaching"},
-                    {name: "Aakash Digital", url: "https://www.aakash.ac.in/", price: "₹35,000/year", type: "Premium"}
-                ]
-            },
-            mba: {
-                youtube: [
-                    {name: "Unacademy CAT", url: "https://www.youtube.com/@UnacademyCAT", subscribers: "800K+", focus: "CAT Preparation"},
-                    {name: "Career Launcher", url: "https://www.youtube.com/@CareerLauncherIndia", subscribers: "600K+", focus: "MBA Entrance"},
-                    {name: "Study IQ MBA", url: "https://www.youtube.com/@StudyIQeducation", subscribers: "4.2M+", focus: "Quantitative Aptitude"}
-                ],
-                courses: [
-                    {name: "Coursera MBA", url: "https://www.coursera.org/browse/business", price: "$49/month", type: "University"},
-                    {name: "edX Business", url: "https://www.edx.org/learn/business", price: "Free/Verified", type: "Premium"}
-                ]
-            },
-            law: {
-                youtube: [
-                    {name: "Legal Edge", url: "https://www.youtube.com/@LegalEdgeIndia", subscribers: "300K+", focus: "CLAT Preparation"},
-                    {name: "Law Prep Tutorial", url: "https://www.youtube.com/@LawPrepTutorial", subscribers: "150K+", focus: "Legal Aptitude"},
-                    {name: "Judiciary Gold", url: "https://www.youtube.com/@JudiciaryGold", subscribers: "200K+", focus: "Judicial Services"}
-                ],
-                courses: [
-                    {name: "Unacademy Law", url: "https://unacademy.com/goal/clat", price: "₹999/month", type: "Premium"},
-                    {name: "BYJU's CLAT", url: "https://byjus.com/clat/", price: "₹20,000/year", type: "Comprehensive"}
-                ]
-            },
-            design: {
-                youtube: [
-                    {name: "Adobe Creative", url: "https://www.youtube.com/@AdobeCreativeCloud", subscribers: "1.2M+", focus: "Design Tools"},
-                    {name: "Figma", url: "https://www.youtube.com/@Figma", subscribers: "800K+", focus: "UI/UX Design"},
-                    {name: "The Futur", url: "https://www.youtube.com/@thefutur", subscribers: "1.5M+", focus: "Design Business"}
-                ],
-                courses: [
-                    {name: "Udemy Design", url: "https://www.udemy.com/topic/design/", price: "$50-200", type: "Skills"},
-                    {name: "Skillshare", url: "https://www.skillshare.com/browse/design", price: "$99/year", type: "Creative"},
-                    {name: "Adobe Creative Cloud", url: "https://www.adobe.com/creativecloud.html", price: "$52.99/month", type: "Professional"}
-                ]
-            }
-        };
-
-        // Jobs Data
+        // Job Data
         const jobsData = {
             software: [
-                {title: "Software Engineer", company: "Google", location: "Bangalore", experience: "0-2 years", salary: "₹25-50 LPA", link: "https://careers.google.com/jobs/results/?location=India&q=software%20engineer", type: "Full-time"},
-                {title: "Full Stack Developer", company: "Amazon", location: "Hyderabad", experience: "2-5 years", salary: "₹18-35 LPA", link: "https://www.amazon.jobs/en/search?offset=0&result_limit=10&sort=relevant&keywords=full%20stack%20developer&cities%5B%5D=Hyderabad", type: "Full-time"},
-                {title: "Frontend Developer", company: "Flipkart", location: "Bangalore", experience: "1-3 years", salary: "₹12-22 LPA", link: "https://www.flipkartcareers.com/#!/joblist", type: "Full-time"}
+                {
+                    title: "Full Stack Developer",
+                    company: "Amazon",
+                    location: "Bangalore",
+                    experience: "2-5 years",
+                    salary: "₹18-35 LPA",
+                    skills: ["React", "Node.js", "AWS", "Python"],
+                    applyLink: "https://www.amazon.jobs/en/search?offset=0&result_limit=10&sort=relevant&keywords=full%20stack%20developer&cities%5B%5D=Bangalore",
+                    type: "Full-time",
+                    posted: "2 days ago"
+                },
+                {
+                    title: "Software Engineer",
+                    company: "Google",
+                    location: "Hyderabad", 
+                    experience: "0-2 years",
+                    salary: "₹25-50 LPA",
+                    skills: ["Python", "Java", "System Design"],
+                    applyLink: "https://careers.google.com/jobs/results/?location=India&q=software%20engineer",
+                    type: "Full-time",
+                    posted: "1 day ago"
+                }
             ],
             ca: [
-                {title: "Senior Auditor", company: "Deloitte", location: "Mumbai", experience: "3-6 years", salary: "₹12-25 LPA", link: "https://www2.deloitte.com/in/en/pages/careers/careers.html", type: "Full-time"},
-                {title: "Tax Consultant", company: "PwC", location: "Delhi", experience: "2-5 years", salary: "₹10-20 LPA", link: "https://www.pwc.in/careers.html", type: "Full-time"}
+                {
+                    title: "Senior Chartered Accountant",
+                    company: "Deloitte",
+                    location: "Mumbai",
+                    experience: "3-6 years", 
+                    salary: "₹12-20 LPA",
+                    skills: ["Financial Reporting", "Audit", "Tax Planning"],
+                    applyLink: "https://www.naukri.com/chartered-accountant-jobs",
+                    type: "Full-time",
+                    posted: "3 days ago"
+                }
+            ],
+            medical: [
+                {
+                    title: "Junior Doctor",
+                    company: "Apollo Hospitals",
+                    location: "Delhi",
+                    experience: "0-2 years",
+                    salary: "₹8-15 LPA", 
+                    skills: ["Clinical Skills", "Patient Care", "Medical Knowledge"],
+                    applyLink: "https://www.naukri.com/medical-jobs",
+                    type: "Full-time",
+                    posted: "5 days ago"
+                }
             ]
         };
 
-        // Internships Data
+        // Internship Data
         const internshipsData = {
             software: [
-                {title: "Software Development Intern", company: "Microsoft", duration: "3 months", stipend: "₹50,000/month", link: "https://careers.microsoft.com/students/us/en/search-results?keywords=intern", remote: "Hybrid"},
-                {title: "Web Development Intern", company: "Zomato", duration: "6 months", stipend: "₹25,000/month", link: "https://www.zomato.com/careers", remote: "On-site"},
-                {title: "Mobile App Intern", company: "Paytm", duration: "4 months", stipend: "₹30,000/month", link: "https://jobs.paytm.com/", remote: "Remote"}
+                {
+                    title: "Software Engineering Intern",
+                    company: "Microsoft",
+                    location: "Bangalore",
+                    duration: "3 months",
+                    stipend: "₹50,000/month",
+                    skills: ["Python", "C++", "Data Structures"],
+                    applyLink: "https://careers.microsoft.com/students/us/en/search-results?keywords=intern",
+                    posted: "1 week ago"
+                }
             ],
-            design: [
-                {title: "UI/UX Design Intern", company: "Swiggy", duration: "3 months", stipend: "₹20,000/month", link: "https://careers.swiggy.com/", remote: "Hybrid"},
-                {title: "Graphic Design Intern", company: "Ola", duration: "4 months", stipend: "₹18,000/month", link: "https://www.olacabs.com/careers/", remote: "On-site"}
+            ca: [
+                {
+                    title: "CA Article Trainee",
+                    company: "KPMG",
+                    location: "Mumbai",
+                    duration: "6 months",
+                    stipend: "₹25,000/month",
+                    skills: ["Audit", "Financial Analysis"],
+                    applyLink: "https://internshala.com/internships/finance",
+                    posted: "3 days ago"
+                }
             ]
         };
+
+        // Enhanced AI Response Generator
+        function generateEnhancedAIResponse(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            // Career-specific responses
+            if (lowerMessage.includes('data scientist') || lowerMessage.includes('data science')) {
+                return `🚀 **Complete Data Science Roadmap:**
+
+**Phase 1: Foundation (3-6 months)**
+📚 **Mathematics & Statistics:**
+• Linear Algebra: Khan Academy (https://www.khanacademy.org/math/linear-algebra)
+• Statistics: StatQuest YouTube (https://www.youtube.com/c/joshstarmer)
+• Probability: MIT OpenCourseWare
+
+📊 **Programming:**
+• Python: Codecademy Python Course
+• R: R for Data Science (https://r4ds.had.co.nz/)
+• SQL: SQLBolt (https://sqlbolt.com/)
+
+**Phase 2: Core Skills (6-9 months)**
+🤖 **Machine Learning:**
+• Andrew Ng's Course: Coursera ML Course
+• Hands-on: Kaggle Learn (https://www.kaggle.com/learn)
+• Books: "Hands-On Machine Learning" by Aurélien Géron
+
+**Daily Schedule:**
+• 6:00-8:00 AM: Mathematics practice
+• 9:00-12:00 PM: Programming & projects
+• 2:00-5:00 PM: Theory & reading
+• 7:00-9:00 PM: Kaggle competitions
+
+**Resources & Links:**
+• Free Courses: Coursera, edX, YouTube
+• Practice: Kaggle, HackerRank, LeetCode
+• Books: O'Reilly, Manning Publications
+• Communities: Reddit r/MachineLearning, Stack Overflow
+
+**Career Progression:**
+• Junior Data Scientist: ₹8-15 LPA
+• Senior Data Scientist: ₹25-45 LPA
+• Principal Data Scientist: ₹50+ LPA
+
+Would you like specific project ideas or interview preparation guidance?`;
+            }
+
+            if (lowerMessage.includes('software engineer') || lowerMessage.includes('programming')) {
+                return `💻 **Software Engineering Roadmap:**
+
+**Phase 1: Programming Fundamentals (2-3 months)**
+• Choose a language: Python, JavaScript, or Java
+• Master basics: variables, loops, functions
+• Practice: HackerRank, LeetCode easy problems
+• Build: Calculator, simple games
+
+**Phase 2: Web Development (3-4 months)**
+• Frontend: HTML, CSS, JavaScript, React
+• Backend: Node.js, Express, databases
+• Version Control: Git, GitHub
+• Build: Personal portfolio, full-stack project
+
+**Phase 3: Advanced Skills (4-6 months)**
+• Data Structures & Algorithms
+• System Design basics
+• Cloud platforms: AWS, GCP
+• Build: Complex applications, contribute to open source
+
+**Study Schedule:**
+• Morning: Theory & tutorials (2 hours)
+• Afternoon: Coding practice (3 hours)
+• Evening: Project work (2 hours)
+
+**Top Resources:**
+• FreeCodeCamp: https://www.freecodecamp.org/
+• The Odin Project: https://www.theodinproject.com/
+• Coursera CS Courses: https://www.coursera.org/browse/computer-science
+
+**Job Market:**
+• Entry Level: ₹5-12 LPA
+• Mid Level: ₹15-30 LPA
+• Senior Level: ₹35+ LPA
+
+Need help with specific technologies or interview preparation?`;
+            }
+
+            // General career responses
+            const responses = [
+                `I'm here to provide comprehensive career guidance! Whether you're looking for study materials, job opportunities, skill development roadmaps, or career transitions - I can help with detailed, actionable advice.
+
+What specific area would you like to explore? I can provide:
+• 📚 Study resources and course recommendations
+• 🗺️ Step-by-step learning roadmaps  
+• 💼 Job search strategies and market insights
+• 🎯 Skill development plans
+• 📈 Salary negotiation tips
+• 🚀 Career transition guidance
+
+Just ask me about any career field - Software Engineering, Medical, CA, MBA, Law, Design, or any other profession!`,
+
+                `Great question! I'm equipped with extensive knowledge about career paths, industry trends, and professional development. Here's how I can assist you:
+
+**🎯 Career Planning:**
+• Personalized roadmaps for any field
+• Skill gap analysis and recommendations
+• Industry insights and growth projections
+
+**📚 Learning Resources:**
+• Curated course recommendations
+• Free and paid learning platforms
+• Books, tutorials, and certification guides
+
+**💼 Job Market Guidance:**
+• Current market trends and demands
+• Salary insights by experience level
+• Interview preparation strategies
+
+**🚀 Professional Growth:**
+• Networking strategies
+• Personal branding tips
+• Leadership development paths
+
+What career challenge can I help you solve today?`,
+
+                `I'm your comprehensive career advisor with access to the latest industry data and trends! Here's what makes my guidance valuable:
+
+**Real-Time Market Analysis:**
+• Current job market conditions
+• In-demand skills by industry
+• Salary benchmarks and growth projections
+
+**Personalized Learning Paths:**
+• Customized study schedules
+• Resource recommendations based on your goals
+• Progress tracking and milestone planning
+
+**Industry-Specific Guidance:**
+• Tech: Software Engineering, Data Science, AI/ML
+• Finance: CA, Investment Banking, Financial Analysis
+• Healthcare: Medical, Nursing, Healthcare Management
+• Business: MBA, Marketing, Operations, Consulting
+
+**Actionable Career Strategies:**
+• Portfolio building guidance
+• Interview preparation scripts
+• Networking and job search tactics
+
+What specific career goal would you like to achieve? I'll create a detailed action plan for you!`
+            ];
+            
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
 
         // Main App Component
         function App() {
-            const [currentPage, setCurrentPage] = useState('home');
+            const [currentStep, setCurrentStep] = useState('welcome');
             const [selectedField, setSelectedField] = useState(null);
+            const [userProfile, setUserProfile] = useState({
+                name: '',
+                experience: '',
+                interests: [],
+                goals: ''
+            });
+            const [assessmentResults, setAssessmentResults] = useState(null);
             const [chatHistory, setChatHistory] = useState([]);
-            const [showModal, setShowModal] = useState(false);
-            const [modalContent, setModalContent] = useState(null);
 
             const contextValue = {
-                currentPage,
-                setCurrentPage,
-                selectedField,
+                currentStep, 
+                setCurrentStep,
+                selectedField, 
                 setSelectedField,
-                chatHistory,
-                setChatHistory,
-                showModal,
-                setShowModal,
-                modalContent,
-                setModalContent
+                userProfile, 
+                setUserProfile,
+                assessmentResults, 
+                setAssessmentResults,
+                chatHistory, 
+                setChatHistory
             };
 
             return React.createElement(
                 AppContext.Provider,
                 { value: contextValue },
-                React.createElement('div', { className: 'app' },
+                React.createElement('div', { className: 'app dark-theme' },
                     React.createElement(Header, null),
                     React.createElement(MainContent, null),
-                    React.createElement(Footer, null),
-                    showModal && React.createElement(Modal, null)
+                    React.createElement(Footer, null)
                 )
             );
         }
 
         // Header Component
         function Header() {
-            const { currentPage, setCurrentPage } = useContext(AppContext);
+            const { currentStep, setCurrentStep } = useContext(AppContext);
 
             const navItems = [
-                { id: 'home', label: 'Home', icon: '🏠' },
-                { id: 'study-materials', label: 'Study Materials', icon: '📚' },
-                { id: 'jobs', label: 'Jobs', icon: '💼' },
-                { id: 'internships', label: 'Internships', icon: '🎯' },
-                { id: 'analytics', label: 'Analytics', icon: '📊' },
-                { id: 'ai-coach', label: 'AI Coach', icon: '🤖' }
+                { key: 'welcome', label: 'Home', icon: '🏠' },
+                { key: 'fields', label: 'Career Fields', icon: '🎯' },
+                { key: 'study-materials', label: 'Study Materials', icon: '📚' },
+                { key: 'jobs', label: 'Jobs', icon: '💼' },
+                { key: 'internships', label: 'Internships', icon: '🎓' },
+                { key: 'assessment', label: 'Assessment', icon: '📊' },
+                { key: 'resume-builder', label: 'Resume Builder', icon: '📝' },
+                { key: 'ats-checker', label: 'ATS Checker', icon: '✅' },
+                { key: 'coach', label: 'AI Coach', icon: '🤖' }
             ];
 
-            return React.createElement('header', { className: 'app-header' },
+            return React.createElement('header', { className: 'app-header glass-effect' },
                 React.createElement('div', { className: 'container' },
                     React.createElement('div', { className: 'header-content' },
                         React.createElement('div', { 
-                            className: 'logo',
-                            onClick: () => setCurrentPage('home')
+                            className: 'logo glow-effect',
+                            onClick: () => setCurrentStep('welcome')
                         },
-                            React.createElement('div', { className: 'logo-icon' }, '🚀'),
+                            React.createElement('div', { className: 'logo-icon cyber-glow' }, '🚀'),
                             React.createElement('div', { className: 'logo-text' },
-                                React.createElement('span', { className: 'logo-name' }, 'Ultimate Career Platform'),
-                                React.createElement('span', { className: 'logo-subtitle' }, 'AI-Powered Career Guidance')
+                                React.createElement('span', { className: 'logo-name gradient-text' }, 'CareerAI Pro'),
+                                React.createElement('span', { className: 'logo-subtitle neon-text' }, 'Ultimate Career Platform')
                             )
                         ),
                         React.createElement('nav', { className: 'header-nav' },
                             navItems.map(item =>
                                 React.createElement('button', {
-                                    key: item.id,
-                                    className: `nav-btn ${currentPage === item.id ? 'active' : ''}`,
-                                    onClick: () => setCurrentPage(item.id)
-                                },
+                                    key: item.key,
+                                    className: `nav-btn cyber-btn ${currentStep === item.key ? 'active cyber-active' : ''}`,
+                                    onClick: () => setCurrentStep(item.key)
+                                }, 
                                     React.createElement('span', { className: 'nav-icon' }, item.icon),
                                     React.createElement('span', { className: 'nav-label' }, item.label)
                                 )
@@ -305,77 +664,201 @@
 
         // Main Content Router
         function MainContent() {
-            const { currentPage } = useContext(AppContext);
+            const { currentStep } = useContext(AppContext);
 
-            const renderPage = () => {
-                switch (currentPage) {
-                    case 'home': return React.createElement(HomePage, null);
-                    case 'study-materials': return React.createElement(StudyMaterialsPage, null);
-                    case 'jobs': return React.createElement(JobsPage, null);
-                    case 'internships': return React.createElement(InternshipsPage, null);
-                    case 'analytics': return React.createElement(AnalyticsPage, null);
-                    case 'ai-coach': return React.createElement(AICoachPage, null);
-                    default: return React.createElement(HomePage, null);
+            const renderStep = () => {
+                switch (currentStep) {
+                    case 'welcome': return React.createElement(WelcomeScreen, null);
+                    case 'fields': return React.createElement(CareerFields, null);
+                    case 'study-materials': return React.createElement(StudyMaterials, null);
+                    case 'jobs': return React.createElement(JobsPortal, null);
+                    case 'internships': return React.createElement(InternshipsPortal, null);
+                    case 'assessment': return React.createElement(CareerAssessment, null);
+                    case 'assessment-results': return React.createElement(AssessmentResults, null);
+                    case 'resume-builder': return React.createElement(ResumeBuilder, null);
+                    case 'ats-checker': return React.createElement(ATSChecker, null);
+                    case 'coach': return React.createElement(AICoach, null);
+                    case 'analytics': return React.createElement(AnalyticsDashboard, null);
+                    default: return React.createElement(WelcomeScreen, null);
                 }
             };
 
-            return React.createElement('main', { className: 'main-content', id: 'main-content' }, renderPage());
+            return React.createElement('main', { className: 'main-content cyber-bg' }, renderStep());
         }
 
-        // Home Page Component
-        function HomePage() {
-            const { setCurrentPage, setSelectedField } = useContext(AppContext);
+        // Welcome Screen with Enhanced Dark Theme
+        function WelcomeScreen() {
+            const { setCurrentStep, userProfile, setUserProfile } = useContext(AppContext);
 
-            const handleFieldClick = (fieldKey) => {
-                setSelectedField(fieldKey);
-                setCurrentPage('study-materials');
+            const handleStart = (e) => {
+                e.preventDefault();
+                if (userProfile.name.trim()) {
+                    setCurrentStep('fields');
+                }
             };
 
-            return React.createElement('div', { className: 'home-page' },
+            // Fixed: Add click handlers for feature cards
+            const handleFeatureClick = (feature) => {
+                switch(feature) {
+                    case 'study':
+                        setCurrentStep('study-materials');
+                        break;
+                    case 'jobs':
+                        setCurrentStep('jobs');
+                        break;
+                    case 'ai':
+                        setCurrentStep('coach');
+                        break;
+                    case 'analytics':
+                        setCurrentStep('analytics');
+                        break;
+                    default:
+                        break;
+                }
+            };
+
+            return React.createElement('div', { className: 'welcome-screen cyber-container' },
                 React.createElement('div', { className: 'container' },
-                    React.createElement('div', { className: 'hero-section' },
-                        React.createElement('h1', { className: 'hero-title' }, 
-                            'Ultimate Career Platform'),
-                        React.createElement('p', { className: 'hero-subtitle' }, 
-                            'AI-powered career guidance with real jobs, live internships, and comprehensive study materials'),
-                        React.createElement('div', { className: 'hero-buttons' },
-                            React.createElement('button', {
-                                className: 'btn btn--primary btn--lg',
-                                onClick: () => setCurrentPage('ai-coach')
-                            }, '🤖 Start with AI Coach'),
-                            React.createElement('button', {
-                                className: 'btn btn--outline btn--lg',
-                                onClick: () => setCurrentPage('study-materials')
-                            }, '📚 Explore Study Materials')
+                    React.createElement('div', { className: 'welcome-content' },
+                        React.createElement('div', { className: 'welcome-hero' },
+                            React.createElement('h1', { className: 'cyber-title gradient-text' }, 
+                                React.createElement('span', { className: 'glow-text' }, 'CareerAI Pro'),
+                                React.createElement('br'),
+                                React.createElement('span', { className: 'cyber-subtitle' }, 'Ultimate Career Guidance Platform')
+                            ),
+                            React.createElement('p', { className: 'cyber-description' }, 
+                                'AI-powered career platform with study materials, live jobs, internships, resume builder, ATS checker, and personalized guidance for ALL career fields.'
+                            ),
+                            React.createElement('div', { className: 'feature-highlights' },
+                                React.createElement('div', { 
+                                    className: 'feature-item cyber-card',
+                                    onClick: () => handleFeatureClick('study')
+                                },
+                                    React.createElement('span', { className: 'feature-icon' }, '📚'),
+                                    React.createElement('span', null, 'Live Study Materials')
+                                ),
+                                React.createElement('div', { 
+                                    className: 'feature-item cyber-card',
+                                    onClick: () => handleFeatureClick('jobs')
+                                },
+                                    React.createElement('span', { className: 'feature-icon' }, '💼'),
+                                    React.createElement('span', null, 'Real Jobs & Internships')
+                                ),
+                                React.createElement('div', { 
+                                    className: 'feature-item cyber-card',
+                                    onClick: () => handleFeatureClick('ai')
+                                },
+                                    React.createElement('span', { className: 'feature-icon' }, '🤖'),
+                                    React.createElement('span', null, 'AI Career Coach')
+                                ),
+                                React.createElement('div', { 
+                                    className: 'feature-item cyber-card',
+                                    onClick: () => handleFeatureClick('analytics')
+                                },
+                                    React.createElement('span', { className: 'feature-icon' }, '📊'),
+                                    React.createElement('span', null, 'Analytics & Insights')
+                                )
+                            )
+                        ),
+                        React.createElement('div', { className: 'welcome-form cyber-panel' },
+                            React.createElement('h2', { className: 'form-title neon-text' }, "Let's Begin Your Journey"),
+                            React.createElement('form', { onSubmit: handleStart },
+                                React.createElement('div', { className: 'form-group' },
+                                    React.createElement('label', { className: 'form-label cyber-label' }, "What's your name?"),
+                                    React.createElement('input', {
+                                        type: 'text',
+                                        className: 'form-control cyber-input',
+                                        value: userProfile.name,
+                                        onChange: (e) => setUserProfile({...userProfile, name: e.target.value}),
+                                        placeholder: 'Enter your name',
+                                        required: true
+                                    })
+                                ),
+                                React.createElement('div', { className: 'form-group' },
+                                    React.createElement('label', { className: 'form-label cyber-label' }, 'Experience Level'),
+                                    React.createElement('select', {
+                                        className: 'form-control cyber-select',
+                                        value: userProfile.experience,
+                                        onChange: (e) => setUserProfile({...userProfile, experience: e.target.value})
+                                    },
+                                        React.createElement('option', { value: '' }, 'Select your level'),
+                                        React.createElement('option', { value: 'student' }, 'Student/Fresher'),
+                                        React.createElement('option', { value: 'entry' }, 'Entry Level (0-2 years)'),
+                                        React.createElement('option', { value: 'mid' }, 'Mid Level (3-5 years)'),
+                                        React.createElement('option', { value: 'senior' }, 'Senior Level (6-10 years)'),
+                                        React.createElement('option', { value: 'expert' }, 'Expert (10+ years)')
+                                    )
+                                ),
+                                React.createElement('div', { className: 'form-group' },
+                                    React.createElement('label', { className: 'form-label cyber-label' }, 'Career Goals'),
+                                    React.createElement('textarea', {
+                                        className: 'form-control cyber-textarea',
+                                        value: userProfile.goals,
+                                        onChange: (e) => setUserProfile({...userProfile, goals: e.target.value}),
+                                        placeholder: 'What are you looking to achieve in your career?',
+                                        rows: 3
+                                    })
+                                ),
+                                React.createElement('button', {
+                                    type: 'submit',
+                                    className: 'btn cyber-btn-primary glow-btn'
+                                }, '🚀 Start Career Journey')
+                            )
                         )
                     ),
-                    React.createElement('div', { className: 'career-fields-section' },
-                        React.createElement('h2', { className: 'section-title' }, 'Career Fields'),
-                        React.createElement('div', { className: 'fields-grid' },
-                            Object.entries(careerFieldsData).map(([key, field]) =>
-                                React.createElement('div', {
-                                    key: key,
-                                    className: 'field-card neon-border',
-                                    onClick: () => handleFieldClick(key),
-                                    style: { '--accent-color': field.color }
-                                },
-                                    React.createElement('div', { className: 'field-icon' }, field.icon),
-                                    React.createElement('h3', null, field.name),
-                                    React.createElement('p', { className: 'field-description' }, field.description),
-                                    React.createElement('div', { className: 'field-stats' },
-                                        React.createElement('div', { className: 'stat' },
-                                            React.createElement('span', { className: 'stat-value' }, field.avgSalary),
-                                            React.createElement('span', { className: 'stat-label' }, 'Salary Range')
-                                        ),
-                                        React.createElement('div', { className: 'stat' },
-                                            React.createElement('span', { className: 'stat-value' }, field.demandLevel),
-                                            React.createElement('span', { className: 'stat-label' }, 'Demand')
-                                        )
+                    React.createElement('div', { className: 'analytics-preview' },
+                        React.createElement('h3', { className: 'section-title neon-text' }, 'Career Insights & Analytics'),
+                        React.createElement(PieChartDisplay, null)
+                    )
+                )
+            );
+        }
+
+        // Career Fields Component
+        function CareerFields() {
+            const { setCurrentStep, setSelectedField } = useContext(AppContext);
+
+            const careerFields = [
+                { key: 'softwareEngineering', name: 'Software Engineering & Tech', icon: '💻', growth: '+22%', jobs: '500k+' },
+                { key: 'ca', name: 'Chartered Accountant (CA)', icon: '📊', growth: '+15%', jobs: '200k+' },
+                { key: 'medical', name: 'Medical (NEET/MBBS)', icon: '🩺', growth: '+18%', jobs: '300k+' },
+                { key: 'upsc', name: 'UPSC/Civil Services', icon: '🏛️', growth: '+8%', jobs: '50k+' },
+                { key: 'engineering', name: 'Engineering (JEE)', icon: '⚙️', growth: '+12%', jobs: '400k+' },
+                { key: 'business', name: 'Business/MBA', icon: '💼', growth: '+20%', jobs: '350k+' },
+                { key: 'law', name: 'Law/Legal', icon: '⚖️', growth: '+10%', jobs: '150k+' },
+                { key: 'design', name: 'Design/Creative', icon: '🎨', growth: '+25%', jobs: '100k+' }
+            ];
+
+            return React.createElement('div', { className: 'career-fields cyber-container' },
+                React.createElement('div', { className: 'container' },
+                    React.createElement('div', { className: 'page-header' },
+                        React.createElement('h1', { className: 'cyber-title gradient-text' }, 'Explore Career Fields'),
+                        React.createElement('p', { className: 'cyber-description' }, 'Discover career opportunities across all major industries with real-time market data')
+                    ),
+                    React.createElement('div', { className: 'fields-grid' },
+                        careerFields.map(field =>
+                            React.createElement('div', {
+                                key: field.key,
+                                className: 'field-card cyber-card hover-glow',
+                                onClick: () => {
+                                    setSelectedField(field.key);
+                                    setCurrentStep('study-materials');
+                                }
+                            },
+                                React.createElement('div', { className: 'field-icon cyber-icon' }, field.icon),
+                                React.createElement('h3', { className: 'field-title' }, field.name),
+                                React.createElement('div', { className: 'field-stats' },
+                                    React.createElement('div', { className: 'stat-item' },
+                                        React.createElement('span', { className: 'stat-label' }, 'Growth'),
+                                        React.createElement('span', { className: 'stat-value success-text' }, field.growth)
                                     ),
-                                    React.createElement('div', { className: 'field-counts' },
-                                        React.createElement('span', null, `${field.jobCount.toLocaleString()} Jobs`),
-                                        React.createElement('span', null, `${field.internshipCount.toLocaleString()} Internships`)
+                                    React.createElement('div', { className: 'stat-item' },
+                                        React.createElement('span', { className: 'stat-label' }, 'Jobs'),
+                                        React.createElement('span', { className: 'stat-value primary-text' }, field.jobs)
                                     )
+                                ),
+                                React.createElement('div', { className: 'field-action' },
+                                    React.createElement('span', { className: 'action-text' }, 'Explore Resources')
                                 )
                             )
                         )
@@ -384,304 +867,605 @@
             );
         }
 
-        // Study Materials Page
-        function StudyMaterialsPage() {
-            const { selectedField } = useContext(AppContext);
-            const [activeField, setActiveField] = useState(selectedField || 'ca');
-            const [activeTab, setActiveTab] = useState('youtube');
+        // Study Materials Component
+        function StudyMaterials() {
+            const [selectedCategory, setSelectedCategory] = useState('softwareEngineering');
 
-            const fieldTabs = [
-                { key: 'ca', label: 'CA', icon: '💼' },
-                { key: 'engineering', label: 'Engineering', icon: '⚙️' },
-                { key: 'medical', label: 'Medical', icon: '🩺' },
-                { key: 'mba', label: 'MBA', icon: '📈' },
-                { key: 'law', label: 'Law', icon: '⚖️' },
-                { key: 'design', label: 'Design', icon: '🎨' }
-            ];
+            const categories = Object.keys(appData.studyMaterials);
 
-            const materialTabs = [
-                { key: 'youtube', label: 'YouTube', icon: '📺' },
-                { key: 'courses', label: 'Courses', icon: '🎓' },
-                { key: 'books', label: 'Books', icon: '📚' },
-                { key: 'mockTests', label: 'Mock Tests', icon: '✏️' },
-                { key: 'platforms', label: 'Platforms', icon: '💻' }
-            ];
-
-            const currentMaterials = studyMaterials[activeField] || {};
-            const currentData = currentMaterials[activeTab] || [];
-
-            return React.createElement('div', { className: 'study-materials-page' },
+            return React.createElement('div', { className: 'study-materials cyber-container' },
                 React.createElement('div', { className: 'container' },
                     React.createElement('div', { className: 'page-header' },
-                        React.createElement('h1', null, 'Study Materials'),
-                        React.createElement('p', null, 'Real-time live study materials for all career fields')
+                        React.createElement('h1', { className: 'cyber-title gradient-text' }, 'Live Study Materials'),
+                        React.createElement('p', { className: 'cyber-description' }, 'Real-time study resources with direct links to courses, tutorials, and materials')
                     ),
-                    React.createElement('div', { className: 'field-tabs' },
-                        fieldTabs.map(tab =>
-                            React.createElement('button', {
-                                key: tab.key,
-                                className: `tab-btn ${activeField === tab.key ? 'active' : ''}`,
-                                onClick: () => setActiveField(tab.key)
+                    React.createElement('div', { className: 'category-tabs' },
+                        categories.map(category => {
+                            const data = appData.studyMaterials[category];
+                            return React.createElement('button', {
+                                key: category,
+                                className: `category-tab cyber-tab ${selectedCategory === category ? 'active' : ''}`,
+                                onClick: () => setSelectedCategory(category)
                             },
-                                React.createElement('span', { className: 'tab-icon' }, tab.icon),
-                                React.createElement('span', null, tab.label)
-                            )
-                        )
-                    ),
-                    React.createElement('div', { className: 'material-tabs' },
-                        materialTabs.map(tab =>
-                            React.createElement('button', {
-                                key: tab.key,
-                                className: `tab-btn ${activeTab === tab.key ? 'active' : ''}`,
-                                onClick: () => setActiveTab(tab.key)
-                            },
-                                React.createElement('span', { className: 'tab-icon' }, tab.icon),
-                                React.createElement('span', null, tab.label)
-                            )
-                        )
+                                React.createElement('span', { className: 'tab-icon' }, data.icon),
+                                React.createElement('span', { className: 'tab-label' }, data.category)
+                            );
+                        })
                     ),
                     React.createElement('div', { className: 'materials-content' },
-                        React.createElement('div', { className: 'materials-grid' },
-                            currentData.map((item, index) =>
-                                React.createElement('div', { key: index, className: 'material-card' },
-                                    React.createElement('div', { className: 'material-header' },
-                                        React.createElement('h3', null, item.name),
-                                        item.subscribers && React.createElement('span', { className: 'subscribers' }, item.subscribers),
-                                        item.price && React.createElement('span', { className: 'price' }, item.price)
-                                    ),
-                                    React.createElement('div', { className: 'material-content' },
-                                        item.focus && React.createElement('p', { className: 'focus' }, `Focus: ${item.focus}`),
-                                        item.author && React.createElement('p', { className: 'author' }, `By: ${item.author}`),
-                                        item.type && React.createElement('span', { className: 'type-badge' }, item.type),
-                                        item.essential && React.createElement('span', { className: 'essential-badge' }, 'Essential')
-                                    ),
-                                    React.createElement('div', { className: 'material-actions' },
-                                        React.createElement('a', {
-                                            href: item.url,
-                                            target: '_blank',
-                                            rel: 'noopener noreferrer',
-                                            className: 'btn btn--primary'
-                                        }, 'Access Resource')
+                        React.createElement(StudyMaterialsList, { category: selectedCategory })
+                    )
+                )
+            );
+        }
+
+        // Study Materials List Component
+        function StudyMaterialsList({ category }) {
+            const materials = appData.studyMaterials[category];
+
+            if (!materials) return null;
+
+            // Fixed: Add proper click handler for external links
+            const handleResourceClick = (url) => {
+                window.open(url, '_blank', 'noopener,noreferrer');
+            };
+
+            return React.createElement('div', { className: 'materials-list' },
+                React.createElement('h2', { className: 'category-title neon-text' }, materials.category),
+                React.createElement('div', { className: 'resources-grid' },
+                    materials.resources.map((resource, index) =>
+                        React.createElement('div', { key: index, className: 'resource-card cyber-card hover-glow' },
+                            React.createElement('div', { className: 'resource-header' },
+                                React.createElement('h3', { className: 'resource-name' }, resource.name),
+                                React.createElement('div', { className: 'resource-meta' },
+                                    React.createElement('span', { className: 'resource-type cyber-badge' }, resource.type),
+                                    React.createElement('div', { className: 'resource-rating' },
+                                        React.createElement('span', { className: 'rating-value' }, '⭐ ', resource.rating),
+                                        React.createElement('span', { 
+                                            className: `free-status ${resource.free === true ? 'free' : resource.free === 'Partial' ? 'partial' : 'paid'}`
+                                        }, resource.free === true ? 'FREE' : resource.free === 'Partial' ? 'PARTIAL' : 'PAID')
                                     )
                                 )
-                            )
+                            ),
+                            React.createElement('p', { className: 'resource-description' }, resource.description),
+                            React.createElement('button', {
+                                className: 'btn cyber-btn-primary resource-link',
+                                onClick: () => handleResourceClick(resource.url)
+                            }, '🚀 Access Resource')
                         )
                     )
                 )
             );
         }
 
-        // Jobs Page
-        function JobsPage() {
-            const [activeFilter, setActiveFilter] = useState('all');
-            const [experienceFilter, setExperienceFilter] = useState('all');
+        // Jobs Portal Component
+        function JobsPortal() {
+            const [selectedJobCategory, setSelectedJobCategory] = useState('software');
 
             const jobCategories = [
-                { key: 'all', label: 'All Jobs', count: 200000 },
-                { key: 'software', label: 'Software', count: 50000 },
-                { key: 'ca', label: 'CA/Finance', count: 15000 },
-                { key: 'medical', label: 'Medical', count: 25000 },
-                { key: 'engineering', label: 'Engineering', count: 40000 }
+                { key: 'software', label: 'Software Engineering', icon: '💻', count: jobsData.software?.length || 0 },
+                { key: 'ca', label: 'CA/Finance', icon: '📊', count: jobsData.ca?.length || 0 },
+                { key: 'medical', label: 'Medical/Healthcare', icon: '🩺', count: jobsData.medical?.length || 0 }
             ];
 
-            const experienceFilters = [
-                { key: 'all', label: 'All Experience' },
-                { key: 'fresher', label: 'Fresher (0-1 years)' },
-                { key: 'entry', label: 'Entry (1-3 years)' },
-                { key: 'mid', label: 'Mid (3-7 years)' },
-                { key: 'senior', label: 'Senior (7+ years)' }
-            ];
-
-            const allJobs = [
-                ...jobsData.software,
-                ...jobsData.ca,
-                // Add more jobs from other categories
-                {title: "Data Scientist", company: "Flipkart", location: "Bangalore", experience: "2-5 years", salary: "₹15-30 LPA", link: "https://www.flipkartcareers.com/#!/joblist", type: "Full-time"},
-                {title: "Product Manager", company: "Zomato", location: "Gurgaon", experience: "3-6 years", salary: "₹20-40 LPA", link: "https://www.zomato.com/careers", type: "Full-time"},
-                {title: "Marketing Manager", company: "Paytm", location: "Noida", experience: "2-5 years", salary: "₹12-25 LPA", link: "https://jobs.paytm.com/", type: "Full-time"}
-            ];
-
-            return React.createElement('div', { className: 'jobs-page' },
+            return React.createElement('div', { className: 'jobs-portal cyber-container' },
                 React.createElement('div', { className: 'container' },
                     React.createElement('div', { className: 'page-header' },
-                        React.createElement('h1', null, 'Job Opportunities'),
-                        React.createElement('p', null, 'Live job openings from top companies across India')
+                        React.createElement('h1', { className: 'cyber-title gradient-text' }, 'Live Jobs Portal'),
+                        React.createElement('p', { className: 'cyber-description' }, 'Real job opportunities from top companies with direct application links')
                     ),
-                    React.createElement('div', { className: 'filters-section' },
-                        React.createElement('div', { className: 'filter-group' },
-                            React.createElement('h3', null, 'Job Categories'),
-                            React.createElement('div', { className: 'filter-tabs' },
-                                jobCategories.map(category =>
-                                    React.createElement('button', {
-                                        key: category.key,
-                                        className: `filter-btn ${activeFilter === category.key ? 'active' : ''}`,
-                                        onClick: () => setActiveFilter(category.key)
+                    React.createElement('div', { className: 'job-categories' },
+                        jobCategories.map(category =>
+                            React.createElement('button', {
+                                key: category.key,
+                                className: `category-btn cyber-btn ${selectedJobCategory === category.key ? 'active' : ''}`,
+                                onClick: () => setSelectedJobCategory(category.key)
+                            },
+                                React.createElement('span', { className: 'category-icon' }, category.icon),
+                                React.createElement('span', { className: 'category-label' }, category.label),
+                                React.createElement('span', { className: 'category-count cyber-badge' }, category.count)
+                            )
+                        )
+                    ),
+                    React.createElement('div', { className: 'jobs-list' },
+                        React.createElement(JobsList, { category: selectedJobCategory })
+                    ),
+                    React.createElement('div', { className: 'job-search-links cyber-panel' },
+                        React.createElement('h3', { className: 'section-title' }, 'More Job Opportunities'),
+                        React.createElement('div', { className: 'search-links-grid' },
+                            React.createElement('button', {
+                                className: 'search-link cyber-card',
+                                onClick: () => window.open('https://www.linkedin.com/jobs/', '_blank')
+                            }, '💼 LinkedIn Jobs'),
+                            React.createElement('button', {
+                                className: 'search-link cyber-card',
+                                onClick: () => window.open('https://www.naukri.com/', '_blank')
+                            }, '🔍 Naukri.com'),
+                            React.createElement('button', {
+                                className: 'search-link cyber-card',
+                                onClick: () => window.open('https://in.indeed.com/', '_blank')
+                            }, '📊 Indeed India'),
+                            React.createElement('button', {
+                                className: 'search-link cyber-card',
+                                onClick: () => window.open('https://angel.co/jobs', '_blank')
+                            }, '🚀 AngelList')
+                        )
+                    )
+                )
+            );
+        }
+
+        // Jobs List Component
+        function JobsList({ category }) {
+            const jobs = jobsData[category] || [];
+
+            if (jobs.length === 0) {
+                return React.createElement('div', { className: 'no-jobs-message cyber-panel' },
+                    React.createElement('p', null, 'More jobs coming soon for this category!')
+                );
+            }
+
+            // Fixed: Add proper click handler for job applications
+            const handleApplyClick = (url) => {
+                window.open(url, '_blank', 'noopener,noreferrer');
+            };
+
+            return React.createElement('div', { className: 'jobs-grid' },
+                jobs.map((job, index) =>
+                    React.createElement('div', { key: index, className: 'job-card cyber-card hover-glow' },
+                        React.createElement('div', { className: 'job-header' },
+                            React.createElement('h3', { className: 'job-title' }, job.title),
+                            React.createElement('div', { className: 'job-company' },
+                                React.createElement('strong', null, job.company),
+                                React.createElement('span', { className: 'job-location' }, ' • ', job.location)
+                            )
+                        ),
+                        React.createElement('div', { className: 'job-details' },
+                            React.createElement('div', { className: 'job-meta' },
+                                React.createElement('span', { className: 'job-experience' }, '📅 ', job.experience),
+                                React.createElement('span', { className: 'job-salary success-text' }, '💰 ', job.salary),
+                                React.createElement('span', { className: 'job-type cyber-badge' }, job.type)
+                            ),
+                            React.createElement('div', { className: 'job-skills' },
+                                job.skills.map((skill, skillIndex) =>
+                                    React.createElement('span', { key: skillIndex, className: 'skill-tag' }, skill)
+                                )
+                            ),
+                            React.createElement('div', { className: 'job-posted' }, 'Posted: ', job.posted)
+                        ),
+                        React.createElement('div', { className: 'job-actions' },
+                            React.createElement('button', {
+                                className: 'btn cyber-btn-primary',
+                                onClick: () => handleApplyClick(job.applyLink)
+                            }, '🚀 Apply Now')
+                        )
+                    )
+                )
+            );
+        }
+
+        // Internships Portal Component
+        function InternshipsPortal() {
+            const [selectedInternCategory, setSelectedInternCategory] = useState('software');
+
+            const internCategories = [
+                { key: 'software', label: 'Software Engineering', icon: '💻', count: internshipsData.software?.length || 0 },
+                { key: 'ca', label: 'CA/Finance', icon: '📊', count: internshipsData.ca?.length || 0 }
+            ];
+
+            return React.createElement('div', { className: 'internships-portal cyber-container' },
+                React.createElement('div', { className: 'container' },
+                    React.createElement('div', { className: 'page-header' },
+                        React.createElement('h1', { className: 'cyber-title gradient-text' }, 'Live Internships Portal'),
+                        React.createElement('p', { className: 'cyber-description' }, 'Real internship opportunities with stipends and direct application links')
+                    ),
+                    React.createElement('div', { className: 'intern-categories' },
+                        internCategories.map(category =>
+                            React.createElement('button', {
+                                key: category.key,
+                                className: `category-btn cyber-btn ${selectedInternCategory === category.key ? 'active' : ''}`,
+                                onClick: () => setSelectedInternCategory(category.key)
+                            },
+                                React.createElement('span', { className: 'category-icon' }, category.icon),
+                                React.createElement('span', { className: 'category-label' }, category.label),
+                                React.createElement('span', { className: 'category-count cyber-badge' }, category.count)
+                            )
+                        )
+                    ),
+                    React.createElement('div', { className: 'internships-list' },
+                        React.createElement(InternshipsList, { category: selectedInternCategory })
+                    ),
+                    React.createElement('div', { className: 'internship-search-links cyber-panel' },
+                        React.createElement('h3', { className: 'section-title' }, 'More Internship Opportunities'),
+                        React.createElement('div', { className: 'search-links-grid' },
+                            React.createElement('button', {
+                                className: 'search-link cyber-card',
+                                onClick: () => window.open('https://internshala.com/', '_blank')
+                            }, '🎓 Internshala'),
+                            React.createElement('button', {
+                                className: 'search-link cyber-card',
+                                onClick: () => window.open('https://www.letsintern.com/', '_blank')
+                            }, '💼 LetsIntern'),
+                            React.createElement('button', {
+                                className: 'search-link cyber-card',
+                                onClick: () => window.open('https://angel.co/jobs?job_type=internship', '_blank')
+                            }, '🚀 AngelList Internships')
+                        )
+                    )
+                )
+            );
+        }
+
+        // Internships List Component
+        function InternshipsList({ category }) {
+            const internships = internshipsData[category] || [];
+
+            if (internships.length === 0) {
+                return React.createElement('div', { className: 'no-internships-message cyber-panel' },
+                    React.createElement('p', null, 'More internships coming soon for this category!')
+                );
+            }
+
+            // Fixed: Add proper click handler for internship applications
+            const handleApplyClick = (url) => {
+                window.open(url, '_blank', 'noopener,noreferrer');
+            };
+
+            return React.createElement('div', { className: 'internships-grid' },
+                internships.map((internship, index) =>
+                    React.createElement('div', { key: index, className: 'internship-card cyber-card hover-glow' },
+                        React.createElement('div', { className: 'internship-header' },
+                            React.createElement('h3', { className: 'internship-title' }, internship.title),
+                            React.createElement('div', { className: 'internship-company' },
+                                React.createElement('strong', null, internship.company),
+                                React.createElement('span', { className: 'internship-location' }, ' • ', internship.location)
+                            )
+                        ),
+                        React.createElement('div', { className: 'internship-details' },
+                            React.createElement('div', { className: 'internship-meta' },
+                                React.createElement('span', { className: 'internship-duration' }, '📅 ', internship.duration),
+                                React.createElement('span', { className: 'internship-stipend success-text' }, '💰 ', internship.stipend)
+                            ),
+                            React.createElement('div', { className: 'internship-skills' },
+                                internship.skills.map((skill, skillIndex) =>
+                                    React.createElement('span', { key: skillIndex, className: 'skill-tag' }, skill)
+                                )
+                            ),
+                            React.createElement('div', { className: 'internship-posted' }, 'Posted: ', internship.posted)
+                        ),
+                        React.createElement('div', { className: 'internship-actions' },
+                            React.createElement('button', {
+                                className: 'btn cyber-btn-primary',
+                                onClick: () => handleApplyClick(internship.applyLink)
+                            }, '🚀 Apply Now')
+                        )
+                    )
+                )
+            );
+        }
+
+        // Career Assessment Component
+        function CareerAssessment() {
+            const { setCurrentStep, setAssessmentResults } = useContext(AppContext);
+            const [currentQuestion, setCurrentQuestion] = useState(0);
+            const [answers, setAnswers] = useState({});
+
+            const questions = [
+                {
+                    id: 1,
+                    question: "What type of work environment motivates you most?",
+                    options: [
+                        { text: "Creative and innovative projects", value: "creative", weight: { design: 3, business: 2 } },
+                        { text: "Analytical problem-solving", value: "analytical", weight: { softwareEngineering: 3, ca: 2 } },
+                        { text: "Helping people directly", value: "service", weight: { medical: 3, law: 2 } },
+                        { text: "Leading teams and projects", value: "leadership", weight: { business: 3, upsc: 2 } },
+                        { text: "Building and creating things", value: "building", weight: { engineering: 3, softwareEngineering: 2 } }
+                    ]
+                },
+                {
+                    id: 2,
+                    question: "Which skills do you want to develop most?",
+                    options: [
+                        { text: "Programming and Technology", value: "tech", weight: { softwareEngineering: 3, engineering: 1 } },
+                        { text: "Financial Analysis and Planning", value: "finance", weight: { ca: 3, business: 2 } },
+                        { text: "Medical Knowledge and Patient Care", value: "medical", weight: { medical: 3 } },
+                        { text: "Creative Design and Arts", value: "creative", weight: { design: 3 } },
+                        { text: "Legal Research and Advocacy", value: "legal", weight: { law: 3, upsc: 1 } }
+                    ]
+                },
+                {
+                    id: 3,
+                    question: "What drives your career motivation?",
+                    options: [
+                        { text: "High salary and financial security", value: "money", weight: { softwareEngineering: 2, ca: 3, business: 2 } },
+                        { text: "Making a social impact", value: "impact", weight: { medical: 3, law: 2, upsc: 3 } },
+                        { text: "Creative expression and innovation", value: "creativity", weight: { design: 3, softwareEngineering: 1 } },
+                        { text: "Intellectual challenges", value: "intellectual", weight: { engineering: 3, law: 2 } },
+                        { text: "Job security and stability", value: "security", weight: { upsc: 3, ca: 2 } }
+                    ]
+                }
+            ];
+
+            const handleAnswer = (questionId, option) => {
+                setAnswers({...answers, [questionId]: option});
+            };
+
+            const handleNext = () => {
+                if (currentQuestion < questions.length - 1) {
+                    setCurrentQuestion(currentQuestion + 1);
+                } else {
+                    const results = calculateResults(answers);
+                    setAssessmentResults(results);
+                    // Fixed: Navigate to assessment results instead of welcome
+                    setCurrentStep('assessment-results');
+                }
+            };
+
+            const calculateResults = (userAnswers) => {
+                const fieldScores = {};
+                
+                Object.entries(userAnswers).forEach(([questionId, selectedOption]) => {
+                    const question = questions.find(q => q.id === parseInt(questionId));
+                    const option = question.options.find(opt => opt.value === selectedOption.value);
+                    
+                    if (option && option.weight) {
+                        Object.entries(option.weight).forEach(([field, weight]) => {
+                            fieldScores[field] = (fieldScores[field] || 0) + weight;
+                        });
+                    }
+                });
+
+                const topFields = Object.entries(fieldScores)
+                    .sort(([,a], [,b]) => b - a)
+                    .slice(0, 3)
+                    .map(([field, score]) => ({ field, score }));
+
+                return {
+                    topFields,
+                    personalizedRecommendations: generatePersonalizedRecommendations(topFields),
+                    timestamp: new Date()
+                };
+            };
+
+            const generatePersonalizedRecommendations = (topFields) => {
+                const recommendations = [];
+                
+                topFields.forEach(({ field, score }) => {
+                    const fieldData = appData.studyMaterials[field];
+                    if (fieldData) {
+                        recommendations.push({
+                            field: fieldData.category,
+                            icon: fieldData.icon,
+                            confidence: Math.round((score / 9) * 100),
+                            resources: fieldData.resources.slice(0, 3),
+                            nextSteps: [
+                                `Explore ${fieldData.category} fundamentals`,
+                                `Complete beginner courses in this field`,
+                                `Build projects to gain practical experience`,
+                                `Network with professionals in ${fieldData.category}`
+                            ]
+                        });
+                    }
+                });
+                
+                return recommendations;
+            };
+
+            const question = questions[currentQuestion];
+
+            return React.createElement('div', { className: 'career-assessment cyber-container' },
+                React.createElement('div', { className: 'container' },
+                    React.createElement('div', { className: 'assessment-header' },
+                        React.createElement('h1', { className: 'cyber-title gradient-text' }, 'AI Career Assessment'),
+                        React.createElement('div', { className: 'progress-container' },
+                            React.createElement('div', { className: 'progress-bar' },
+                                React.createElement('div', {
+                                    className: 'progress-fill',
+                                    style: { width: `${((currentQuestion + 1) / questions.length) * 100}%` }
+                                })
+                            ),
+                            React.createElement('p', { className: 'progress-text' }, `Question ${currentQuestion + 1} of ${questions.length}`)
+                        )
+                    ),
+                    React.createElement('div', { className: 'question-container' },
+                        React.createElement('div', { className: 'question-card cyber-panel' },
+                            React.createElement('h2', { className: 'question-text' }, question.question),
+                            React.createElement('div', { className: 'options-list' },
+                                question.options.map((option, index) =>
+                                    React.createElement('label', { 
+                                        key: index, 
+                                        className: `option-item cyber-card ${answers[question.id]?.value === option.value ? 'selected' : ''}` 
                                     },
-                                        React.createElement('span', null, category.label),
-                                        React.createElement('span', { className: 'count' }, category.count.toLocaleString())
+                                        React.createElement('input', {
+                                            type: 'radio',
+                                            name: `question-${question.id}`,
+                                            value: option.value,
+                                            onChange: () => handleAnswer(question.id, option),
+                                            checked: answers[question.id]?.value === option.value
+                                        }),
+                                        React.createElement('span', { className: 'option-text' }, option.text)
                                     )
                                 )
-                            )
-                        ),
-                        React.createElement('div', { className: 'filter-group' },
-                            React.createElement('h3', null, 'Experience Level'),
-                            React.createElement('select', {
-                                className: 'form-control',
-                                value: experienceFilter,
-                                onChange: (e) => setExperienceFilter(e.target.value)
-                            },
-                                experienceFilters.map(filter =>
-                                    React.createElement('option', { key: filter.key, value: filter.key }, filter.label)
-                                )
-                            )
-                        )
-                    ),
-                    React.createElement('div', { className: 'job-platforms' },
-                        React.createElement('h3', null, 'Search on Popular Platforms'),
-                        React.createElement('div', { className: 'platform-links' },
-                            React.createElement('a', { href: 'https://www.linkedin.com/jobs/', target: '_blank', className: 'platform-btn' },
-                                React.createElement('span', null, '💼'),
-                                React.createElement('span', null, 'LinkedIn Jobs')
                             ),
-                            React.createElement('a', { href: 'https://www.naukri.com/', target: '_blank', className: 'platform-btn' },
-                                React.createElement('span', null, '🔍'),
-                                React.createElement('span', null, 'Naukri.com')
-                            ),
-                            React.createElement('a', { href: 'https://in.indeed.com/', target: '_blank', className: 'platform-btn' },
-                                React.createElement('span', null, '🎯'),
-                                React.createElement('span', null, 'Indeed')
-                            ),
-                            React.createElement('a', { href: 'https://www.glassdoor.co.in/', target: '_blank', className: 'platform-btn' },
-                                React.createElement('span', null, '🏢'),
-                                React.createElement('span', null, 'Glassdoor')
-                            )
-                        )
-                    ),
-                    React.createElement('div', { className: 'jobs-grid' },
-                        allJobs.map((job, index) =>
-                            React.createElement('div', { key: index, className: 'job-card' },
-                                React.createElement('div', { className: 'job-header' },
-                                    React.createElement('h3', null, job.title),
-                                    React.createElement('span', { className: 'company' }, job.company)
-                                ),
-                                React.createElement('div', { className: 'job-details' },
-                                    React.createElement('div', { className: 'detail' },
-                                        React.createElement('span', { className: 'icon' }, '📍'),
-                                        React.createElement('span', null, job.location)
-                                    ),
-                                    React.createElement('div', { className: 'detail' },
-                                        React.createElement('span', { className: 'icon' }, '💼'),
-                                        React.createElement('span', null, job.experience)
-                                    ),
-                                    React.createElement('div', { className: 'detail' },
-                                        React.createElement('span', { className: 'icon' }, '💰'),
-                                        React.createElement('span', null, job.salary)
-                                    )
-                                ),
-                                React.createElement('div', { className: 'job-actions' },
-                                    React.createElement('a', {
-                                        href: job.link,
-                                        target: '_blank',
-                                        rel: 'noopener noreferrer',
-                                        className: 'btn btn--primary'
-                                    }, 'Apply Now'),
-                                    React.createElement('button', { className: 'btn btn--outline' }, 'Save Job')
-                                )
-                            )
+                            React.createElement('button', {
+                                className: 'btn cyber-btn-primary assessment-next-btn',
+                                onClick: handleNext,
+                                disabled: !answers[question.id]
+                            }, currentQuestion === questions.length - 1 ? '🎯 Get AI Recommendations' : '➡️ Next Question')
                         )
                     )
                 )
             );
         }
 
-        // Internships Page
-        function InternshipsPage() {
-            const [activeField, setActiveField] = useState('all');
-            const [durationFilter, setDurationFilter] = useState('all');
+        // Assessment Results Component
+        function AssessmentResults() {
+            const { assessmentResults, setCurrentStep } = useContext(AppContext);
 
-            const internshipFields = [
-                { key: 'all', label: 'All Fields' },
-                { key: 'software', label: 'Software Development' },
-                { key: 'design', label: 'Design & Creative' },
-                { key: 'marketing', label: 'Marketing' },
-                { key: 'finance', label: 'Finance & CA' }
-            ];
+            if (!assessmentResults) return null;
 
-            const allInternships = [
-                ...internshipsData.software,
-                ...internshipsData.design,
-                // Add more internships
-                {title: "Marketing Intern", company: "Myntra", duration: "3 months", stipend: "₹15,000/month", link: "https://careers.myntra.com/", remote: "Remote"},
-                {title: "Finance Intern", company: "HDFC Bank", duration: "6 months", stipend: "₹12,000/month", link: "https://www.hdfcbank.com/personal/about-us/careers", remote: "On-site"}
-            ];
-
-            return React.createElement('div', { className: 'internships-page' },
+            return React.createElement('div', { className: 'assessment-results cyber-container' },
                 React.createElement('div', { className: 'container' },
-                    React.createElement('div', { className: 'page-header' },
-                        React.createElement('h1', null, 'Live Internships'),
-                        React.createElement('p', null, 'Real internship opportunities from top companies')
+                    React.createElement('div', { className: 'results-header' },
+                        React.createElement('h1', { className: 'cyber-title gradient-text' }, 'Your AI-Powered Career Recommendations'),
+                        React.createElement('p', { className: 'cyber-description' }, 'Personalized career paths based on your interests and skills')
                     ),
-                    React.createElement('div', { className: 'internship-platforms' },
-                        React.createElement('h3', null, 'Top Internship Platforms'),
-                        React.createElement('div', { className: 'platform-links' },
-                            React.createElement('a', { href: 'https://internshala.com/', target: '_blank', className: 'platform-btn' },
-                                React.createElement('span', null, '🎓'),
-                                React.createElement('span', null, 'Internshala')
-                            ),
-                            React.createElement('a', { href: 'https://www.letsintern.com/', target: '_blank', className: 'platform-btn' },
-                                React.createElement('span', null, '🚀'),
-                                React.createElement('span', null, 'LetsIntern')
-                            ),
-                            React.createElement('a', { href: 'https://www.theforage.com/', target: '_blank', className: 'platform-btn' },
-                                React.createElement('span', null, '🌟'),
-                                React.createElement('span', null, 'Forage')
-                            ),
-                            React.createElement('a', { href: 'https://hellointern.com/', target: '_blank', className: 'platform-btn' },
-                                React.createElement('span', null, '👋'),
-                                React.createElement('span', null, 'HelloIntern')
+                    React.createElement('div', { className: 'recommendations-list' },
+                        assessmentResults.personalizedRecommendations.map((rec, index) =>
+                            React.createElement('div', { key: index, className: 'recommendation-card cyber-panel hover-glow' },
+                                React.createElement('div', { className: 'rec-header' },
+                                    React.createElement('div', { className: 'rec-icon' }, rec.icon),
+                                    React.createElement('div', { className: 'rec-info' },
+                                        React.createElement('h3', { className: 'rec-title' }, rec.field),
+                                        React.createElement('div', { className: 'confidence-meter' },
+                                            React.createElement('span', { className: 'confidence-label' }, 'Match Confidence: '),
+                                            React.createElement('span', { className: 'confidence-value success-text' }, rec.confidence, '%'),
+                                            React.createElement('div', { className: 'confidence-bar' },
+                                                React.createElement('div', {
+                                                    className: 'confidence-fill',
+                                                    style: { width: `${rec.confidence}%` }
+                                                })
+                                            )
+                                        )
+                                    )
+                                ),
+                                React.createElement('div', { className: 'rec-content' },
+                                    React.createElement('div', { className: 'next-steps' },
+                                        React.createElement('h4', null, 'Recommended Next Steps:'),
+                                        React.createElement('ul', null,
+                                            rec.nextSteps.map((step, stepIndex) =>
+                                                React.createElement('li', { key: stepIndex }, step)
+                                            )
+                                        )
+                                    ),
+                                    React.createElement('div', { className: 'recommended-resources' },
+                                        React.createElement('h4', null, 'Top Resources:'),
+                                        React.createElement('div', { className: 'resource-links' },
+                                            rec.resources.map((resource, resIndex) =>
+                                                React.createElement('button', {
+                                                    key: resIndex,
+                                                    className: 'resource-link-btn cyber-btn-secondary',
+                                                    onClick: () => window.open(resource.url, '_blank')
+                                                }, resource.name)
+                                            )
+                                        )
+                                    )
+                                )
                             )
                         )
                     ),
-                    React.createElement('div', { className: 'filters-section' },
-                        React.createElement('div', { className: 'filter-tabs' },
-                            internshipFields.map(field =>
+                    React.createElement('div', { className: 'results-actions' },
+                        React.createElement('button', {
+                            className: 'btn cyber-btn-primary',
+                            onClick: () => setCurrentStep('study-materials')
+                        }, '📚 Explore Study Materials'),
+                        React.createElement('button', {
+                            className: 'btn cyber-btn-secondary',
+                            onClick: () => setCurrentStep('coach')
+                        }, '🤖 Chat with AI Coach')
+                    )
+                )
+            );
+        }
+
+        // Resume Builder Component
+        function ResumeBuilder() {
+            const [resumeData, setResumeData] = useState({
+                personalInfo: { name: '', email: '', phone: '', address: '' },
+                summary: '',
+                experience: [],
+                education: [],
+                skills: []
+            });
+
+            const handlePersonalInfoChange = (field, value) => {
+                setResumeData({
+                    ...resumeData,
+                    personalInfo: { ...resumeData.personalInfo, [field]: value }
+                });
+            };
+
+            const addExperience = () => {
+                setResumeData({
+                    ...resumeData,
+                    experience: [...resumeData.experience, { company: '', position: '', duration: '', description: '' }]
+                });
+            };
+
+            const handleExport = () => {
+                alert('Resume export functionality will be implemented with PDF generation library.');
+            };
+
+            return React.createElement('div', { className: 'resume-builder cyber-container' },
+                React.createElement('div', { className: 'container' },
+                    React.createElement('div', { className: 'page-header' },
+                        React.createElement('h1', { className: 'cyber-title gradient-text' }, 'AI Resume Builder'),
+                        React.createElement('p', { className: 'cyber-description' }, 'Create ATS-friendly resumes with AI-powered suggestions')
+                    ),
+                    React.createElement('div', { className: 'resume-builder-content' },
+                        React.createElement('div', { className: 'builder-form cyber-panel' },
+                            React.createElement('h3', { className: 'section-title' }, 'Personal Information'),
+                            React.createElement('div', { className: 'form-grid' },
+                                React.createElement('input', {
+                                    type: 'text',
+                                    className: 'form-control cyber-input',
+                                    placeholder: 'Full Name',
+                                    value: resumeData.personalInfo.name,
+                                    onChange: (e) => handlePersonalInfoChange('name', e.target.value)
+                                }),
+                                React.createElement('input', {
+                                    type: 'email',
+                                    className: 'form-control cyber-input',
+                                    placeholder: 'Email Address',
+                                    value: resumeData.personalInfo.email,
+                                    onChange: (e) => handlePersonalInfoChange('email', e.target.value)
+                                }),
+                                React.createElement('input', {
+                                    type: 'tel',
+                                    className: 'form-control cyber-input',
+                                    placeholder: 'Phone Number',
+                                    value: resumeData.personalInfo.phone,
+                                    onChange: (e) => handlePersonalInfoChange('phone', e.target.value)
+                                }),
+                                React.createElement('input', {
+                                    type: 'text',
+                                    className: 'form-control cyber-input',
+                                    placeholder: 'Address',
+                                    value: resumeData.personalInfo.address,
+                                    onChange: (e) => handlePersonalInfoChange('address', e.target.value)
+                                })
+                            ),
+                            React.createElement('div', { className: 'form-section' },
+                                React.createElement('h3', { className: 'section-title' }, 'Professional Summary'),
+                                React.createElement('textarea', {
+                                    className: 'form-control cyber-textarea',
+                                    placeholder: 'Write a brief professional summary...',
+                                    value: resumeData.summary,
+                                    onChange: (e) => setResumeData({ ...resumeData, summary: e.target.value }),
+                                    rows: 4
+                                })
+                            ),
+                            React.createElement('div', { className: 'builder-actions' },
                                 React.createElement('button', {
-                                    key: field.key,
-                                    className: `filter-btn ${activeField === field.key ? 'active' : ''}`,
-                                    onClick: () => setActiveField(field.key)
-                                }, field.label)
+                                    className: 'btn cyber-btn-secondary',
+                                    onClick: addExperience
+                                }, '➕ Add Experience'),
+                                React.createElement('button', {
+                                    className: 'btn cyber-btn-primary',
+                                    onClick: handleExport
+                                }, '📄 Export PDF')
                             )
-                        )
-                    ),
-                    React.createElement('div', { className: 'internships-grid' },
-                        allInternships.map((internship, index) =>
-                            React.createElement('div', { key: index, className: 'internship-card' },
-                                React.createElement('div', { className: 'internship-header' },
-                                    React.createElement('h3', null, internship.title),
-                                    React.createElement('span', { className: 'company' }, internship.company)
+                        ),
+                        React.createElement('div', { className: 'resume-preview cyber-panel' },
+                            React.createElement('h3', { className: 'section-title' }, 'Resume Preview'),
+                            React.createElement('div', { className: 'preview-content' },
+                                React.createElement('div', { className: 'preview-header' },
+                                    React.createElement('h2', null, resumeData.personalInfo.name || 'Your Name'),
+                                    React.createElement('p', null, resumeData.personalInfo.email, ' | ', resumeData.personalInfo.phone)
                                 ),
-                                React.createElement('div', { className: 'internship-details' },
-                                    React.createElement('div', { className: 'detail' },
-                                        React.createElement('span', { className: 'icon' }, '⏰'),
-                                        React.createElement('span', null, internship.duration)
-                                    ),
-                                    React.createElement('div', { className: 'detail' },
-                                        React.createElement('span', { className: 'icon' }, '💰'),
-                                        React.createElement('span', null, internship.stipend)
-                                    ),
-                                    React.createElement('div', { className: 'detail' },
-                                        React.createElement('span', { className: 'icon' }, '🏠'),
-                                        React.createElement('span', null, internship.remote)
-                                    )
-                                ),
-                                React.createElement('div', { className: 'internship-actions' },
-                                    React.createElement('a', {
-                                        href: internship.link,
-                                        target: '_blank',
-                                        rel: 'noopener noreferrer',
-                                        className: 'btn btn--primary'
-                                    }, 'Apply Now'),
-                                    React.createElement('button', { className: 'btn btn--outline' }, 'Save')
+                                resumeData.summary && React.createElement('div', { className: 'preview-section' },
+                                    React.createElement('h3', null, 'Professional Summary'),
+                                    React.createElement('p', null, resumeData.summary)
                                 )
                             )
                         )
@@ -690,292 +1474,113 @@
             );
         }
 
-        // Analytics Page with Charts
-        function AnalyticsPage() {
-            const chartRef = useRef(null);
-            const salaryChartRef = useRef(null);
+        // ATS Checker Component
+        function ATSChecker() {
+            const [resumeText, setResumeText] = useState('');
+            const [jobDescription, setJobDescription] = useState('');
+            const [atsScore, setAtsScore] = useState(null);
 
-            useEffect(() => {
-                // Career Demand Pie Chart
-                if (chartRef.current) {
-                    const ctx = chartRef.current.getContext('2d');
-                    new Chart(ctx, {
-                        type: 'pie',
-                        data: {
-                            labels: ['Engineering', 'CA/Finance', 'Medical', 'Data Science', 'MBA/Business', 'Design', 'Law', 'Government'],
-                            datasets: [{
-                                data: [25, 18, 15, 12, 10, 8, 7, 5],
-                                backgroundColor: ['#00d4ff', '#00ff88', '#8b5cf6', '#ff6b35', '#fbbf24', '#ec4899', '#06b6d4', '#10b981']
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                legend: { position: 'bottom', labels: { color: '#ffffff' } },
-                                title: { display: true, text: 'Career Field Demand Distribution', color: '#ffffff' }
-                            }
-                        }
-                    });
+            const checkATS = () => {
+                if (!resumeText.trim() || !jobDescription.trim()) {
+                    alert('Please enter both resume content and job description.');
+                    return;
                 }
 
-                // Salary Progression Chart
-                if (salaryChartRef.current) {
-                    const ctx = salaryChartRef.current.getContext('2d');
-                    new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: ['0-2 Years', '2-5 Years', '5-10 Years', '10+ Years'],
-                            datasets: [{
-                                label: 'Average Salary (LPA)',
-                                data: [8, 18, 35, 60],
-                                backgroundColor: ['#00d4ff', '#00ff88', '#8b5cf6', '#ff6b35']
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                legend: { labels: { color: '#ffffff' } },
-                                title: { display: true, text: 'Salary Progression by Experience', color: '#ffffff' }
-                            },
-                            scales: {
-                                y: { ticks: { color: '#ffffff' } },
-                                x: { ticks: { color: '#ffffff' } }
-                            }
-                        }
-                    });
+                // Simple ATS scoring algorithm
+                const resumeWords = resumeText.toLowerCase().split(/\s+/);
+                const jobWords = jobDescription.toLowerCase().split(/\s+/);
+                
+                const matchedWords = resumeWords.filter(word => 
+                    jobWords.includes(word) && word.length > 3
+                );
+
+                const score = Math.min(Math.round((matchedWords.length / Math.max(jobWords.length * 0.3, 1)) * 100), 95);
+                
+                setAtsScore({
+                    score,
+                    matchedKeywords: matchedWords.slice(0, 10),
+                    recommendations: generateATSRecommendations(score)
+                });
+            };
+
+            const generateATSRecommendations = (score) => {
+                if (score >= 80) {
+                    return ['Excellent ATS compatibility!', 'Your resume should pass most ATS systems', 'Consider minor keyword optimizations'];
+                } else if (score >= 60) {
+                    return ['Good ATS score with room for improvement', 'Add more relevant keywords from job description', 'Optimize section headings for ATS'];
+                } else {
+                    return ['ATS score needs improvement', 'Significantly increase keyword matching', 'Use standard section headings', 'Avoid graphics and complex formatting'];
                 }
-            }, []);
+            };
 
-            const marketStats = [
-                { title: 'Total Job Openings', value: '2,00,000+', trend: '+12%', icon: '💼' },
-                { title: 'Live Internships', value: '45,000+', trend: '+8%', icon: '🎯' },
-                { title: 'Average Salary Growth', value: '15%', trend: '+3%', icon: '📈' },
-                { title: 'Success Rate', value: '78%', trend: '+5%', icon: '🏆' }
-            ];
-
-            return React.createElement('div', { className: 'analytics-page' },
+            return React.createElement('div', { className: 'ats-checker cyber-container' },
                 React.createElement('div', { className: 'container' },
                     React.createElement('div', { className: 'page-header' },
-                        React.createElement('h1', null, 'Career Analytics'),
-                        React.createElement('p', null, 'Market insights and career trends')
+                        React.createElement('h1', { className: 'cyber-title gradient-text' }, 'AI ATS Score Checker'),
+                        React.createElement('p', { className: 'cyber-description' }, 'Check how well your resume matches job requirements')
                     ),
-                    React.createElement('div', { className: 'stats-grid' },
-                        marketStats.map((stat, index) =>
-                            React.createElement('div', { key: index, className: 'stat-card' },
-                                React.createElement('div', { className: 'stat-icon' }, stat.icon),
-                                React.createElement('div', { className: 'stat-content' },
-                                    React.createElement('h3', null, stat.value),
-                                    React.createElement('p', null, stat.title),
-                                    React.createElement('span', { className: 'trend positive' }, stat.trend)
+                    React.createElement('div', { className: 'ats-checker-content' },
+                        React.createElement('div', { className: 'input-section cyber-panel' },
+                            React.createElement('div', { className: 'input-group' },
+                                React.createElement('h3', { className: 'section-title' }, 'Paste Your Resume Content'),
+                                React.createElement('textarea', {
+                                    className: 'form-control cyber-textarea',
+                                    placeholder: 'Copy and paste your resume text here...',
+                                    value: resumeText,
+                                    onChange: (e) => setResumeText(e.target.value),
+                                    rows: 8
+                                })
+                            ),
+                            React.createElement('div', { className: 'input-group' },
+                                React.createElement('h3', { className: 'section-title' }, 'Job Description'),
+                                React.createElement('textarea', {
+                                    className: 'form-control cyber-textarea',
+                                    placeholder: 'Paste the job description here...',
+                                    value: jobDescription,
+                                    onChange: (e) => setJobDescription(e.target.value),
+                                    rows: 8
+                                })
+                            ),
+                            React.createElement('button', {
+                                className: 'btn cyber-btn-primary check-btn',
+                                onClick: checkATS
+                            }, '🎯 Check ATS Score')
+                        ),
+                        atsScore && React.createElement('div', { className: 'results-section cyber-panel' },
+                            React.createElement('h3', { className: 'section-title' }, 'ATS Score Results'),
+                            React.createElement('div', { className: 'score-display' },
+                                React.createElement('div', { className: 'score-circle' },
+                                    React.createElement('span', { className: 'score-value' }, atsScore.score, '%')
+                                ),
+                                React.createElement('div', { className: 'score-details' },
+                                    React.createElement('h4', null, 'Matched Keywords:'),
+                                    React.createElement('div', { className: 'keywords-list' },
+                                        atsScore.matchedKeywords.map((keyword, index) =>
+                                            React.createElement('span', { key: index, className: 'keyword-tag' }, keyword)
+                                        )
+                                    )
+                                )
+                            ),
+                            React.createElement('div', { className: 'recommendations' },
+                                React.createElement('h4', null, 'Recommendations:'),
+                                React.createElement('ul', null,
+                                    atsScore.recommendations.map((rec, index) =>
+                                        React.createElement('li', { key: index }, rec)
+                                    )
                                 )
                             )
-                        )
-                    ),
-                    React.createElement('div', { className: 'charts-section' },
-                        React.createElement('div', { className: 'chart-container', style: { position: 'relative', height: '400px' } },
-                            React.createElement('canvas', { ref: chartRef })
-                        ),
-                        React.createElement('div', { className: 'chart-container', style: { position: 'relative', height: '400px' } },
-                            React.createElement('canvas', { ref: salaryChartRef })
                         )
                     )
                 )
             );
         }
 
-        // Enhanced AI Coach Page
-        function AICoachPage() {
+        // Enhanced AI Coach Component
+        function AICoach() {
             const { chatHistory, setChatHistory } = useContext(AppContext);
             const [currentMessage, setCurrentMessage] = useState('');
             const [isTyping, setIsTyping] = useState(false);
-            const messagesEndRef = useRef(null);
-
-            const scrollToBottom = () => {
-                messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-            };
-
-            useEffect(() => {
-                scrollToBottom();
-            }, [chatHistory]);
-
-            useEffect(() => {
-                if (chatHistory.length === 0) {
-                    const welcomeMessage = {
-                        id: 1,
-                        sender: 'ai',
-                        message: `🚀 **Welcome to Ultimate Career AI!**
-
-I'm your comprehensive career guide with access to:
-
-📚 **Study Materials** - Live courses, YouTube channels, books
-💼 **Job Opportunities** - Real-time openings from LinkedIn, Naukri  
-🎯 **Internships** - Live opportunities from Internshala, companies
-📊 **Career Analytics** - Salary insights, market trends
-🗺️ **Roadmaps** - Step-by-step career paths
-⏰ **Timetables** - Personalized study schedules
-💡 **Motivation** - Success stories and guidance
-
-**I can help with ANY career topic!** Just ask me about:
-• Study plans for any field
-• Job search strategies
-• Skill development  
-• Interview preparation
-• Salary negotiation
-• Career transitions
-
-**What would you like to explore today?**`,
-                        timestamp: new Date()
-                    };
-                    setChatHistory([welcomeMessage]);
-                }
-            }, [chatHistory.length, setChatHistory]);
-
-            const generateAIResponse = (userMessage) => {
-                const lowerMessage = userMessage.toLowerCase();
-                
-                if (lowerMessage.includes('software engineer') || lowerMessage.includes('programming')) {
-                    return `🚀 **Complete Software Engineering Roadmap:**
-
-📚 **Study Materials:**
-• **YouTube Channels:**
-  - CodeWithHarry: https://www.youtube.com/@CodeWithHarry
-  - Apna College: https://www.youtube.com/@ApnaCollegeOfficial
-  - Love Babbar: https://www.youtube.com/@lovebabbar
-
-📱 **Courses:**
-  - freeCodeCamp: https://www.freecodecamp.org/
-  - Coursera CS: https://www.coursera.org/specializations/computer-science
-  - Udemy Web Development: https://www.udemy.com/topic/web-development/
-
-💼 **Job Opportunities:**
-  - LinkedIn Jobs: https://www.linkedin.com/jobs/software-engineer-jobs/
-  - Naukri.com: https://www.naukri.com/software-engineer-jobs
-
-🎯 **Internships:**
-  - Internshala: https://internshala.com/internships/computer-science
-  - Microsoft Internships: https://careers.microsoft.com/students/
-
-⏰ **6-Month Roadmap:**
-Month 1-2: Learn HTML, CSS, JavaScript
-Month 3-4: Master React.js or Angular  
-Month 5: Backend with Node.js or Python
-Month 6: Build projects and apply for jobs
-
-💡 **Motivation:** "Every expert was once a beginner. Start coding today!"`;
-                }
-                
-                if (lowerMessage.includes('ca') || lowerMessage.includes('chartered accountant')) {
-                    return `💼 **Complete CA Career Guide:**
-
-📚 **Study Materials:**
-• **YouTube Channels:**
-  - CA Rajat Arora: https://www.youtube.com/@CArajatarora
-  - Sunil Sharma CA: https://www.youtube.com/@sunilsharmaCA
-  - CA Praveen Sharma: https://www.youtube.com/@CApraveensharma
-
-📱 **Courses:**
-  - ICAI Learning Hub: https://learning.icai.org/
-  - Unacademy CA: https://unacademy.com/goal/ca-foundation/TGECA
-  - BYJU's CA: https://byjus.com/ca/
-
-💼 **Job Opportunities:**
-  - LinkedIn CA Jobs: https://www.linkedin.com/jobs/chartered-accountant-jobs/
-  - Naukri CA: https://www.naukri.com/chartered-accountant-jobs
-
-🎯 **Internships:**
-  - Big 4 Internships (Deloitte, PwC, EY, KPMG)
-  - CA Firm Internships via Internshala
-
-⏰ **CA Journey Timeline:**
-Foundation (4 months) → Intermediate (8 months) → Final (1 year) + Articleship (3 years)
-
-💡 **Motivation:** "CA opens doors to finance leadership. Start your foundation today!"`;
-                }
-
-                if (lowerMessage.includes('medical') || lowerMessage.includes('neet') || lowerMessage.includes('doctor')) {
-                    return `🩺 **Complete Medical Career Guide:**
-
-📚 **Study Materials:**
-• **YouTube Channels:**
-  - Physics Wallah NEET: https://www.youtube.com/@PhysicsWallah
-  - Vedantu NEET: https://www.youtube.com/@VedantuNEET
-  - Unacademy NEET: https://www.youtube.com/@UnacademyNEETUG
-
-📱 **Courses:**
-  - BYJU's NEET: https://byjus.com/neet/
-  - Allen Online: https://www.allen.ac.in/
-  - Aakash Digital: https://www.aakash.ac.in/
-
-💼 **Job Opportunities:**
-  - LinkedIn Medical: https://www.linkedin.com/jobs/medical-jobs/
-  - Naukri Healthcare: https://www.naukri.com/medical-jobs
-
-🎯 **Internships:**
-  - Hospital Internships
-  - Research Internships in medical colleges
-
-⏰ **Medical Journey:**
-NEET Preparation (1-2 years) → MBBS (5.5 years) → Internship (1 year) → Specialization (3 years)
-
-💡 **Motivation:** "Healing is an art, medicine is a profession. Serve humanity!"`;
-                }
-
-                if (lowerMessage.includes('mba') || lowerMessage.includes('business') || lowerMessage.includes('management')) {
-                    return `📈 **Complete MBA/Business Guide:**
-
-📚 **Study Materials:**
-• **YouTube Channels:**
-  - Unacademy CAT: https://www.youtube.com/@UnacademyCAT
-  - Career Launcher: https://www.youtube.com/@CareerLauncherIndia
-  - Study IQ MBA: https://www.youtube.com/@StudyIQeducation
-
-📱 **Courses:**
-  - Coursera MBA: https://www.coursera.org/browse/business
-  - edX Business: https://www.edx.org/learn/business
-
-💼 **Job Opportunities:**
-  - LinkedIn Business: https://www.linkedin.com/jobs/business-analyst-jobs/
-  - Naukri Management: https://www.naukri.com/mba-jobs
-
-🎯 **Internships:**
-  - Management Trainee programs
-  - Consulting internships
-
-⏰ **MBA Preparation:**
-CAT/GMAT Prep (6-12 months) → MBA Program (2 years) → Placement
-
-💡 **Motivation:** "Leadership is about creating more leaders. Build your business acumen!"`;
-                }
-
-                // Default comprehensive response
-                return `🎯 **I'm here to help with your career journey!**
-
-Based on your query, here are some resources that might help:
-
-📚 **General Career Resources:**
-• LinkedIn Learning: https://www.linkedin.com/learning/
-• Coursera: https://www.coursera.org/
-• Udemy: https://www.udemy.com/
-
-💼 **Job Search Platforms:**
-• LinkedIn Jobs: https://www.linkedin.com/jobs/
-• Naukri.com: https://www.naukri.com/
-• Indeed: https://in.indeed.com/
-
-🎯 **Internship Platforms:**
-• Internshala: https://internshala.com/
-• LetsIntern: https://www.letsintern.com/
-
-💡 **Career Tips:**
-1. Identify your interests and strengths
-2. Build relevant skills through online courses
-3. Create a strong portfolio/resume
-4. Network with professionals in your field
-5. Practice interview skills
-
-**Ask me specifically about any career field for detailed guidance!**
-Fields I can help with: Software Engineering, CA, Medical, MBA, Law, Design, Data Science, Government Jobs, and more!`;
-            };
+            const chatMessagesRef = useRef(null);
 
             const handleSendMessage = (e) => {
                 e.preventDefault();
@@ -993,7 +1598,7 @@ Fields I can help with: Software Engineering, CA, Medical, MBA, Law, Design, Dat
                 setIsTyping(true);
 
                 setTimeout(() => {
-                    const aiResponse = generateAIResponse(currentMessage);
+                    const aiResponse = generateEnhancedAIResponse(currentMessage);
                     const aiMessage = {
                         id: Date.now() + 1,
                         sender: 'ai',
@@ -1005,26 +1610,60 @@ Fields I can help with: Software Engineering, CA, Medical, MBA, Law, Design, Dat
                 }, 2000);
             };
 
-            return React.createElement('div', { className: 'ai-coach-page' },
+            useEffect(() => {
+                if (chatHistory.length === 0) {
+                    const welcomeMessage = {
+                        id: 1,
+                        sender: 'ai',
+                        message: `🤖 **Welcome to AI Career Coach Pro!**
+
+I'm your comprehensive career advisor with access to real-time market data, study resources, and personalized guidance. I can help you with:
+
+✨ **Career Roadmaps & Planning**
+📚 **Study Material Recommendations** 
+💼 **Job Search Strategies**
+💰 **Salary Negotiation Tips**
+🎯 **Skill Development Plans**
+📈 **Industry Insights & Trends**
+
+**Try asking me:**
+• "How to become a data scientist?"
+• "Best resources for learning web development?"
+• "Software engineer salary expectations in India?"
+• "Career transition from finance to tech?"
+
+What career question can I help you with today?`,
+                        timestamp: new Date()
+                    };
+                    setChatHistory([welcomeMessage]);
+                }
+            }, [chatHistory.length, setChatHistory]);
+
+            useEffect(() => {
+                if (chatMessagesRef.current) {
+                    chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+                }
+            }, [chatHistory, isTyping]);
+
+            return React.createElement('div', { className: 'ai-coach cyber-container' },
                 React.createElement('div', { className: 'container' },
-                    React.createElement('div', { className: 'page-header' },
-                        React.createElement('h1', null, '🤖 AI Career Coach'),
-                        React.createElement('p', null, 'Get comprehensive career guidance with real resources and links')
+                    React.createElement('div', { className: 'coach-header' },
+                        React.createElement('h1', { className: 'cyber-title gradient-text' }, 'AI Career Coach Pro'),
+                        React.createElement('p', { className: 'cyber-description' }, 'Get personalized career advice powered by advanced AI')
                     ),
-                    React.createElement('div', { className: 'chat-container' },
-                        React.createElement('div', { className: 'chat-messages' },
+                    React.createElement('div', { className: 'chat-container cyber-panel' },
+                        React.createElement('div', { className: 'chat-messages', ref: chatMessagesRef },
                             chatHistory.map(msg =>
                                 React.createElement('div', { key: msg.id, className: `message ${msg.sender}` },
-                                    React.createElement('div', { className: 'message-avatar' },
+                                    React.createElement('div', { className: 'message-avatar cyber-avatar' },
                                         msg.sender === 'ai' ? '🤖' : '👤'
                                     ),
-                                    React.createElement('div', { className: 'message-content' },
-                                        React.createElement('div', { 
-                                            className: 'message-text',
-                                            dangerouslySetInnerHTML: { 
-                                                __html: msg.message.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                                            }
-                                        }),
+                                    React.createElement('div', { className: 'message-content cyber-message' },
+                                        React.createElement('div', { className: 'message-text' }, 
+                                            msg.message.split('\n').map((line, index) => 
+                                                React.createElement('div', { key: index }, line)
+                                            )
+                                        ),
                                         React.createElement('span', { className: 'message-time' },
                                             msg.timestamp.toLocaleTimeString()
                                         )
@@ -1032,40 +1671,44 @@ Fields I can help with: Software Engineering, CA, Medical, MBA, Law, Design, Dat
                                 )
                             ),
                             isTyping && React.createElement('div', { className: 'message ai' },
-                                React.createElement('div', { className: 'message-avatar' }, '🤖'),
-                                React.createElement('div', { className: 'message-content' },
+                                React.createElement('div', { className: 'message-avatar cyber-avatar' }, '🤖'),
+                                React.createElement('div', { className: 'message-content cyber-message' },
                                     React.createElement('div', { className: 'typing-indicator' },
                                         React.createElement('span'),
                                         React.createElement('span'),
                                         React.createElement('span')
                                     )
                                 )
-                            ),
-                            React.createElement('div', { ref: messagesEndRef })
+                            )
                         ),
                         React.createElement('form', { className: 'chat-form', onSubmit: handleSendMessage },
                             React.createElement('input', {
                                 type: 'text',
-                                className: 'form-control chat-input',
+                                className: 'form-control cyber-input chat-input',
                                 value: currentMessage,
                                 onChange: (e) => setCurrentMessage(e.target.value),
-                                placeholder: 'Ask me anything about careers... (e.g., "How to become a software engineer?")',
+                                placeholder: 'Ask me anything about your career journey...',
                                 disabled: isTyping
                             }),
                             React.createElement('button', {
                                 type: 'submit',
-                                className: 'btn btn--primary send-btn',
+                                className: 'btn cyber-btn-primary send-btn',
                                 disabled: isTyping || !currentMessage.trim()
-                            }, '🚀 Send')
+                            }, '🚀')
                         )
                     ),
                     React.createElement('div', { className: 'quick-questions' },
-                        React.createElement('h3', null, 'Quick Questions:'),
-                        React.createElement('div', { className: 'question-buttons' },
-                            ['How to become a software engineer?', 'CA career guidance', 'Medical career path', 'MBA preparation guide', 'Job interview tips'].map((question, index) =>
+                        React.createElement('h3', { className: 'section-title' }, 'Quick Questions'),
+                        React.createElement('div', { className: 'quick-questions-grid' },
+                            [
+                                'How to become a data scientist?',
+                                'Best programming languages to learn?',
+                                'Software engineer interview tips?',
+                                'Career change from CA to tech?'
+                            ].map((question, index) =>
                                 React.createElement('button', {
                                     key: index,
-                                    className: 'btn btn--outline btn--sm',
+                                    className: 'quick-question-btn cyber-btn-secondary',
                                     onClick: () => setCurrentMessage(question)
                                 }, question)
                             )
@@ -1075,45 +1718,202 @@ Fields I can help with: Software Engineering, CA, Medical, MBA, Law, Design, Dat
             );
         }
 
-        // Modal Component
-        function Modal() {
-            const { showModal, setShowModal, modalContent } = useContext(AppContext);
+        // Pie Chart Display Component - Fixed
+        function PieChartDisplay() {
+            const chartRef = useRef(null);
+            const chartInstance = useRef(null);
 
-            if (!showModal) return null;
+            useEffect(() => {
+                if (chartRef.current) {
+                    const ctx = chartRef.current.getContext('2d');
+                    
+                    if (chartInstance.current) {
+                        chartInstance.current.destroy();
+                    }
 
-            return React.createElement('div', { className: 'modal-overlay', onClick: () => setShowModal(false) },
-                React.createElement('div', { className: 'modal-content', onClick: (e) => e.stopPropagation() },
-                    React.createElement('button', { 
-                        className: 'modal-close', 
-                        onClick: () => setShowModal(false) 
-                    }, '✕'),
-                    modalContent
+                    chartInstance.current = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: appData.pieChartData.careerPopularity.labels,
+                            datasets: [{
+                                data: appData.pieChartData.careerPopularity.data,
+                                backgroundColor: appData.pieChartData.careerPopularity.colors,
+                                borderColor: '#ffffff',
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'right',
+                                    labels: {
+                                        color: '#ffffff',
+                                        font: { size: 12 }
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Career Field Popularity',
+                                    color: '#00d4ff',
+                                    font: { size: 16, weight: 'bold' }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                return () => {
+                    if (chartInstance.current) {
+                        chartInstance.current.destroy();
+                    }
+                };
+            }, []);
+
+            return React.createElement('div', { 
+                className: 'chart-container',
+                style: { position: 'relative', height: '400px' }
+            },
+                React.createElement('canvas', { ref: chartRef })
+            );
+        }
+
+        // Analytics Dashboard Component  
+        function AnalyticsDashboard() {
+            const [selectedChart, setSelectedChart] = useState('careerPopularity');
+
+            const chartTypes = [
+                { key: 'careerPopularity', label: 'Career Popularity', icon: '📊' },
+                { key: 'salaryRanges', label: 'Salary Ranges', icon: '💰' },
+                { key: 'jobLocations', label: 'Job Locations', icon: '📍' }
+            ];
+
+            return React.createElement('div', { className: 'analytics-dashboard cyber-container' },
+                React.createElement('div', { className: 'container' },
+                    React.createElement('div', { className: 'page-header' },
+                        React.createElement('h1', { className: 'cyber-title gradient-text' }, 'Career Analytics Dashboard'),
+                        React.createElement('p', { className: 'cyber-description' }, 'Data-driven insights into career trends and opportunities')
+                    ),
+                    React.createElement('div', { className: 'chart-selector' },
+                        chartTypes.map(chart =>
+                            React.createElement('button', {
+                                key: chart.key,
+                                className: `chart-btn cyber-btn ${selectedChart === chart.key ? 'active' : ''}`,
+                                onClick: () => setSelectedChart(chart.key)
+                            },
+                                React.createElement('span', { className: 'chart-icon' }, chart.icon),
+                                React.createElement('span', null, chart.label)
+                            )
+                        )
+                    ),
+                    React.createElement('div', { className: 'analytics-content' },
+                        React.createElement(AnalyticsChart, { chartType: selectedChart })
+                    )
+                )
+            );
+        }
+
+        // Analytics Chart Component - Fixed
+        function AnalyticsChart({ chartType }) {
+            const chartRef = useRef(null);
+            const chartInstance = useRef(null);
+
+            useEffect(() => {
+                if (chartRef.current) {
+                    const ctx = chartRef.current.getContext('2d');
+                    
+                    if (chartInstance.current) {
+                        chartInstance.current.destroy();
+                    }
+
+                    const chartData = appData.pieChartData[chartType];
+
+                    chartInstance.current = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: chartData.labels,
+                            datasets: [{
+                                data: chartData.data,
+                                backgroundColor: chartData.colors,
+                                borderColor: '#ffffff',
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'right',
+                                    labels: {
+                                        color: '#ffffff',
+                                        font: { size: 14 }
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: chartType.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()),
+                                    color: '#00d4ff',
+                                    font: { size: 18, weight: 'bold' }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                return () => {
+                    if (chartInstance.current) {
+                        chartInstance.current.destroy();
+                    }
+                };
+            }, [chartType]);
+
+            return React.createElement('div', { className: 'chart-wrapper cyber-panel' },
+                React.createElement('div', { 
+                    className: 'chart-container',
+                    style: { position: 'relative', height: '500px' }
+                },
+                    React.createElement('canvas', { ref: chartRef })
                 )
             );
         }
 
         // Footer Component
         function Footer() {
-            return React.createElement('footer', { className: 'app-footer' },
+            return React.createElement('footer', { className: 'app-footer cyber-footer' },
                 React.createElement('div', { className: 'container' },
                     React.createElement('div', { className: 'footer-content' },
                         React.createElement('div', { className: 'footer-section' },
-                            React.createElement('h3', null, 'Ultimate Career Platform'),
-                            React.createElement('p', null, 'AI-powered career guidance with real opportunities')
+                            React.createElement('h4', { className: 'footer-title gradient-text' }, 'CareerAI Pro'),
+                            React.createElement('p', null, 'Ultimate AI-powered career guidance platform with real study materials, jobs, and personalized recommendations.')
                         ),
                         React.createElement('div', { className: 'footer-section' },
-                            React.createElement('h4', null, 'Quick Links'),
+                            React.createElement('h4', { className: 'footer-title' }, 'Features'),
                             React.createElement('ul', null,
-                                React.createElement('li', null, React.createElement('a', { href: '#' }, 'Study Materials')),
-                                React.createElement('li', null, React.createElement('a', { href: '#' }, 'Live Jobs')),
-                                React.createElement('li', null, React.createElement('a', { href: '#' }, 'Internships')),
-                                React.createElement('li', null, React.createElement('a', { href: '#' }, 'AI Coach'))
+                                React.createElement('li', null, '📚 Live Study Materials'),
+                                React.createElement('li', null, '💼 Real Jobs & Internships'),
+                                React.createElement('li', null, '🤖 AI Career Coach'),
+                                React.createElement('li', null, '📊 Career Analytics'),
+                                React.createElement('li', null, '📝 Resume Builder & ATS Checker')
                             )
                         ),
                         React.createElement('div', { className: 'footer-section' },
-                            React.createElement('h4', null, 'Contact'),
-                            React.createElement('p', null, 'Built by team Malware'),
-                            React.createElement('p', null, '© 2025 Ultimate Career Platform')
+                            React.createElement('h4', { className: 'footer-title' }, 'Career Fields'),
+                            React.createElement('ul', null,
+                                React.createElement('li', null, 'Software Engineering'),
+                                React.createElement('li', null, 'Medical & Healthcare'),
+                                React.createElement('li', null, 'Finance & CA'),
+                                React.createElement('li', null, 'Design & Creative'),
+                                React.createElement('li', null, 'Law & Legal'),
+                                React.createElement('li', null, 'Business & MBA')
+                            )
+                        )
+                    ),
+                    React.createElement('div', { className: 'footer-bottom' },
+                        React.createElement('p', { className: 'copyright' }, '© 2025 CareerAI Pro. Empowering careers through AI-driven guidance.'),
+                        React.createElement('p', { className: 'credits gradient-text' }, 
+                            React.createElement('strong', null, 'Made with ❤️ by Team Malware')
                         )
                     )
                 )
